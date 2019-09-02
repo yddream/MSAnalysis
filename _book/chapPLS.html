@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>第 9 章 PLS-DA和OPLS-DA | 基于非靶向代谢组学的化学成分差异性分析</title>
+  <meta name="description" content="第 9 章 PLS-DA和OPLS-DA | 基于非靶向代谢组学的化学成分差异性分析。" />
+  <meta name="generator" content="bookdown 0.13 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="第 9 章 PLS-DA和OPLS-DA | 基于非靶向代谢组学的化学成分差异性分析" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="第 9 章 PLS-DA和OPLS-DA | 基于非靶向代谢组学的化学成分差异性分析。" />
+  <meta name="github-repo" content="yihui/bookdown-chinese" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 9 章 PLS-DA和OPLS-DA | 基于非靶向代谢组学的化学成分差异性分析" />
+  
+  <meta name="twitter:description" content="第 9 章 PLS-DA和OPLS-DA | 基于非靶向代谢组学的化学成分差异性分析。" />
+  
+
+<meta name="author" content="Yandong Yin" />
+
+
+<meta name="date" content="2019-09-02" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="chapPCA.html"/>
+<link rel="next" href="sound.html"/>
+<script src="libs/jquery/jquery.min.js"></script>
+<link href="libs/gitbook/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">基于非靶向代谢组学的化学成分差异性分析</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>寄言</a></li>
+<li class="chapter" data-level="1" data-path="Intro.html"><a href="Intro.html"><i class="fa fa-check"></i><b>1</b> 简介</a></li>
+<li class="chapter" data-level="2" data-path="basis.html"><a href="basis.html"><i class="fa fa-check"></i><b>2</b> R语言及环境配置</a><ul>
+<li class="chapter" data-level="2.1" data-path="basis.html"><a href="basis.html#r"><i class="fa fa-check"></i><b>2.1</b> R语言环境安装</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="basis.html"><a href="basis.html#r"><i class="fa fa-check"></i><b>2.1.1</b> R语言安装</a></li>
+<li class="chapter" data-level="2.1.2" data-path="basis.html"><a href="basis.html#rstudio"><i class="fa fa-check"></i><b>2.1.2</b> Rstudio安装</a></li>
+<li class="chapter" data-level="2.1.3" data-path="basis.html"><a href="basis.html#rstudior"><i class="fa fa-check"></i><b>2.1.3</b> Rstudio中设置R包安装源</a></li>
+<li class="chapter" data-level="2.1.4" data-path="basis.html"><a href="basis.html#linuxmacosr"><i class="fa fa-check"></i><b>2.1.4</b> Linux/MacOS中安装R缺失库文件</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="basis.html"><a href="basis.html#r"><i class="fa fa-check"></i><b>2.2</b> 质谱数据分析相关R包安装</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="basis.html"><a href="basis.html#bioconductor"><i class="fa fa-check"></i><b>2.2.1</b> 安装Bioconductor</a></li>
+<li class="chapter" data-level="2.2.2" data-path="basis.html"><a href="basis.html#xcmscamera"><i class="fa fa-check"></i><b>2.2.2</b> 安装XCMS及CAMERA包</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="basis.html"><a href="basis.html#section-2.3"><i class="fa fa-check"></i><b>2.3</b> 数据准备</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="chapDDA.html"><a href="chapDDA.html"><i class="fa fa-check"></i><b>3</b> DDA-MS技术概要</a><ul>
+<li class="chapter" data-level="3.1" data-path="chapDDA.html"><a href="chapDDA.html#dda"><i class="fa fa-check"></i><b>3.1</b> DDA技术介绍</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="chapPD.html"><a href="chapPD.html"><i class="fa fa-check"></i><b>4</b> 基于XCMS的峰检测</a><ul>
+<li class="chapter" data-level="4.1" data-path="chapPD.html"><a href="chapPD.html#lc-ms"><i class="fa fa-check"></i><b>4.1</b> LC-MS中峰检测简介</a></li>
+<li class="chapter" data-level="4.2" data-path="chapPD.html"><a href="chapPD.html#section-4.2"><i class="fa fa-check"></i><b>4.2</b> 原始数据转换</a></li>
+<li class="chapter" data-level="4.3" data-path="chapPD.html"><a href="chapPD.html#xcms"><i class="fa fa-check"></i><b>4.3</b> 利用XCMS进行峰检测</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="chapPD.html"><a href="chapPD.html#xcms3"><i class="fa fa-check"></i><b>4.3.1</b> xcms3中峰检测的新方法</a></li>
+<li class="chapter" data-level="4.3.2" data-path="chapPD.html"><a href="chapPD.html#xcms"><i class="fa fa-check"></i><b>4.3.2</b> xcms中传统的峰检测方法</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="chapPD.html"><a href="chapPD.html#camera"><i class="fa fa-check"></i><b>4.4</b> 利用CAMERA进行峰注释</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="chapPD.html"><a href="chapPD.html#camera"><i class="fa fa-check"></i><b>4.4.1</b> CAMERA包介绍</a></li>
+<li class="chapter" data-level="4.4.2" data-path="chapPD.html"><a href="chapPD.html#section-4.4.2"><i class="fa fa-check"></i><b>4.4.2</b> 小结</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="chapMSMS.html"><a href="chapMSMS.html"><i class="fa fa-check"></i><b>5</b> 二级谱图提取</a><ul>
+<li class="chapter" data-level="5.1" data-path="chapDDA.html"><a href="chapDDA.html#dda"><i class="fa fa-check"></i><b>5.1</b> DDA数据里的二级谱图</a></li>
+<li class="chapter" data-level="5.2" data-path="chapMSMS.html"><a href="chapMSMS.html#proteowizard"><i class="fa fa-check"></i><b>5.2</b> 利用ProteoWizard进行二级谱图提取</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="chapMSMS.html"><a href="chapMSMS.html#section-5.2.1"><i class="fa fa-check"></i><b>5.2.1</b> 普图提取</a></li>
+<li class="chapter" data-level="5.2.2" data-path="chapMSMS.html"><a href="chapMSMS.html#section-5.2.2"><i class="fa fa-check"></i><b>5.2.2</b> 与峰检测结果进行结合</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="chapPD.html"><a href="chapPD.html#xcms"><i class="fa fa-check"></i><b>5.3</b> 利用XCMS进行二级谱图提取</a></li>
+<li class="chapter" data-level="5.4" data-path="chapMSMS.html"><a href="chapMSMS.html#-1"><i class="fa fa-check"></i><b>5.4</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="chapID.html"><a href="chapID.html"><i class="fa fa-check"></i><b>6</b> 代谢物鉴定</a><ul>
+<li class="chapter" data-level="6.1" data-path="chapID.html"><a href="chapID.html#section-6.1"><i class="fa fa-check"></i><b>6.1</b> 代谢物鉴定方法介绍</a></li>
+<li class="chapter" data-level="6.2" data-path="chapID.html"><a href="chapID.html#section-6.2"><i class="fa fa-check"></i><b>6.2</b> 常用鉴定工具</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="chapSTAT.html"><a href="chapSTAT.html"><i class="fa fa-check"></i><b>7</b> 基本差异分析</a><ul>
+<li class="chapter" data-level="7.1" data-path="chapSTAT.html"><a href="chapSTAT.html#section-7.1"><i class="fa fa-check"></i><b>7.1</b> 代谢物差异分析简介</a></li>
+<li class="chapter" data-level="7.2" data-path="chapSTAT.html"><a href="chapSTAT.html#fold-change"><i class="fa fa-check"></i><b>7.2</b> Fold change</a></li>
+<li class="chapter" data-level="7.3" data-path="chapSTAT.html"><a href="chapSTAT.html#section-7.3"><i class="fa fa-check"></i><b>7.3</b> 基本统计检验</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="chapSTAT.html"><a href="chapSTAT.html#students-t-test"><i class="fa fa-check"></i><b>7.3.1</b> Students’ t-Test</a></li>
+<li class="chapter" data-level="7.3.2" data-path="chapSTAT.html"><a href="chapSTAT.html#wilcoxon-test"><i class="fa fa-check"></i><b>7.3.2</b> Wilcoxon Test</a></li>
+<li class="chapter" data-level="7.3.3" data-path="chapSTAT.html"><a href="chapSTAT.html#-2"><i class="fa fa-check"></i><b>7.3.3</b> 小结</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="chapPCA.html"><a href="chapPCA.html"><i class="fa fa-check"></i><b>8</b> 主成分分析（PCA）</a><ul>
+<li class="chapter" data-level="8.1" data-path="chapPCA.html"><a href="chapPCA.html#pca"><i class="fa fa-check"></i><b>8.1</b> PCA原理及简介</a></li>
+<li class="chapter" data-level="8.2" data-path="chapPCA.html"><a href="chapPCA.html#rpca"><i class="fa fa-check"></i><b>8.2</b> 利用R进行PCA分析</a></li>
+<li class="chapter" data-level="8.3" data-path="chapPCA.html"><a href="chapPCA.html#section-8.3"><i class="fa fa-check"></i><b>8.3</b> 结果解读</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="chapPLS.html"><a href="chapPLS.html"><i class="fa fa-check"></i><b>9</b> PLS-DA和OPLS-DA</a><ul>
+<li class="chapter" data-level="9.1" data-path="chapPLS.html"><a href="chapPLS.html#pls-da"><i class="fa fa-check"></i><b>9.1</b> PLS-DA</a></li>
+<li class="chapter" data-level="9.2" data-path="chapPLS.html"><a href="chapPLS.html#opls-da"><i class="fa fa-check"></i><b>9.2</b> OPLS-DA</a></li>
+</ul></li>
+<li class="appendix"><span><b>附录</b></span></li>
+<li class="chapter" data-level="A" data-path="sound.html"><a href="sound.html"><i class="fa fa-check"></i><b>A</b> 余音绕梁</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>参考文献</a></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="blank">本书由 bookdown 强力驱动</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">基于非靶向代谢组学的化学成分差异性分析</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="chapPLS" class="section level1">
+<h1><span class="header-section-number">第 9 章</span> PLS-DA和OPLS-DA</h1>
+<div id="pls-da" class="section level2">
+<h2><span class="header-section-number">9.1</span> PLS-DA</h2>
+</div>
+<div id="opls-da" class="section level2">
+<h2><span class="header-section-number">9.2</span> OPLS-DA</h2>
+
+
+</div>
+</div>
+
+
+
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="chapPCA.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="sound.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook/js/app.min.js"></script>
+<script src="libs/gitbook/js/lunr.js"></script>
+<script src="libs/gitbook/js/plugin-search.js"></script>
+<script src="libs/gitbook/js/plugin-sharing.js"></script>
+<script src="libs/gitbook/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/yddream/MSAnalysis/edit/master/07-PLS.Rmd",
+"text": "编辑"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["MSAnalisis.pdf", "MSAnalisis.epub"],
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

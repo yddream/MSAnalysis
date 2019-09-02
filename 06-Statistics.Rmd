@@ -1,0 +1,10 @@
+# 基本差异分析{#chapSTAT}
+
+## 代谢物差异分析简介
+
+## Fold change
+## 基本统计检验
+### Students' t-Test
+### Wilcoxon Test
+
+### 小结

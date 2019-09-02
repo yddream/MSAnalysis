@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>第 2 章 R语言及环境配置 | 基于非靶向代谢组学的化学成分差异性分析</title>
+  <meta name="description" content="第 2 章 R语言及环境配置 | 基于非靶向代谢组学的化学成分差异性分析。" />
+  <meta name="generator" content="bookdown 0.13 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="第 2 章 R语言及环境配置 | 基于非靶向代谢组学的化学成分差异性分析" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="第 2 章 R语言及环境配置 | 基于非靶向代谢组学的化学成分差异性分析。" />
+  <meta name="github-repo" content="yihui/bookdown-chinese" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 2 章 R语言及环境配置 | 基于非靶向代谢组学的化学成分差异性分析" />
+  
+  <meta name="twitter:description" content="第 2 章 R语言及环境配置 | 基于非靶向代谢组学的化学成分差异性分析。" />
+  
+
+<meta name="author" content="Yandong Yin" />
+
+
+<meta name="date" content="2019-09-02" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="Intro.html"/>
+<link rel="next" href="chapDDA.html"/>
+<script src="libs/jquery/jquery.min.js"></script>
+<link href="libs/gitbook/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">基于非靶向代谢组学的化学成分差异性分析</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>寄言</a></li>
+<li class="chapter" data-level="1" data-path="Intro.html"><a href="Intro.html"><i class="fa fa-check"></i><b>1</b> 简介</a></li>
+<li class="chapter" data-level="2" data-path="basis.html"><a href="basis.html"><i class="fa fa-check"></i><b>2</b> R语言及环境配置</a><ul>
+<li class="chapter" data-level="2.1" data-path="basis.html"><a href="basis.html#r"><i class="fa fa-check"></i><b>2.1</b> R语言环境安装</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="basis.html"><a href="basis.html#r"><i class="fa fa-check"></i><b>2.1.1</b> R语言安装</a></li>
+<li class="chapter" data-level="2.1.2" data-path="basis.html"><a href="basis.html#rstudio"><i class="fa fa-check"></i><b>2.1.2</b> Rstudio安装</a></li>
+<li class="chapter" data-level="2.1.3" data-path="basis.html"><a href="basis.html#rstudior"><i class="fa fa-check"></i><b>2.1.3</b> Rstudio中设置R包安装源</a></li>
+<li class="chapter" data-level="2.1.4" data-path="basis.html"><a href="basis.html#linuxmacosr"><i class="fa fa-check"></i><b>2.1.4</b> Linux/MacOS中安装R缺失库文件</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="basis.html"><a href="basis.html#r"><i class="fa fa-check"></i><b>2.2</b> 质谱数据分析相关R包安装</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="basis.html"><a href="basis.html#bioconductor"><i class="fa fa-check"></i><b>2.2.1</b> 安装Bioconductor</a></li>
+<li class="chapter" data-level="2.2.2" data-path="basis.html"><a href="basis.html#xcmscamera"><i class="fa fa-check"></i><b>2.2.2</b> 安装XCMS及CAMERA包</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="basis.html"><a href="basis.html#section-2.3"><i class="fa fa-check"></i><b>2.3</b> 数据准备</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="chapDDA.html"><a href="chapDDA.html"><i class="fa fa-check"></i><b>3</b> DDA-MS技术概要</a><ul>
+<li class="chapter" data-level="3.1" data-path="chapDDA.html"><a href="chapDDA.html#dda"><i class="fa fa-check"></i><b>3.1</b> DDA技术介绍</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="chapPD.html"><a href="chapPD.html"><i class="fa fa-check"></i><b>4</b> 基于XCMS的峰检测</a><ul>
+<li class="chapter" data-level="4.1" data-path="chapPD.html"><a href="chapPD.html#lc-ms"><i class="fa fa-check"></i><b>4.1</b> LC-MS中峰检测简介</a></li>
+<li class="chapter" data-level="4.2" data-path="chapPD.html"><a href="chapPD.html#section-4.2"><i class="fa fa-check"></i><b>4.2</b> 原始数据转换</a></li>
+<li class="chapter" data-level="4.3" data-path="chapPD.html"><a href="chapPD.html#xcms"><i class="fa fa-check"></i><b>4.3</b> 利用XCMS进行峰检测</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="chapPD.html"><a href="chapPD.html#xcms3"><i class="fa fa-check"></i><b>4.3.1</b> xcms3中峰检测的新方法</a></li>
+<li class="chapter" data-level="4.3.2" data-path="chapPD.html"><a href="chapPD.html#xcms"><i class="fa fa-check"></i><b>4.3.2</b> xcms中传统的峰检测方法</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="chapPD.html"><a href="chapPD.html#camera"><i class="fa fa-check"></i><b>4.4</b> 利用CAMERA进行峰注释</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="chapPD.html"><a href="chapPD.html#camera"><i class="fa fa-check"></i><b>4.4.1</b> CAMERA包介绍</a></li>
+<li class="chapter" data-level="4.4.2" data-path="chapPD.html"><a href="chapPD.html#section-4.4.2"><i class="fa fa-check"></i><b>4.4.2</b> 小结</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="chapMSMS.html"><a href="chapMSMS.html"><i class="fa fa-check"></i><b>5</b> 二级谱图提取</a><ul>
+<li class="chapter" data-level="5.1" data-path="chapDDA.html"><a href="chapDDA.html#dda"><i class="fa fa-check"></i><b>5.1</b> DDA数据里的二级谱图</a></li>
+<li class="chapter" data-level="5.2" data-path="chapMSMS.html"><a href="chapMSMS.html#proteowizard"><i class="fa fa-check"></i><b>5.2</b> 利用ProteoWizard进行二级谱图提取</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="chapMSMS.html"><a href="chapMSMS.html#section-5.2.1"><i class="fa fa-check"></i><b>5.2.1</b> 普图提取</a></li>
+<li class="chapter" data-level="5.2.2" data-path="chapMSMS.html"><a href="chapMSMS.html#section-5.2.2"><i class="fa fa-check"></i><b>5.2.2</b> 与峰检测结果进行结合</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="chapPD.html"><a href="chapPD.html#xcms"><i class="fa fa-check"></i><b>5.3</b> 利用XCMS进行二级谱图提取</a></li>
+<li class="chapter" data-level="5.4" data-path="chapMSMS.html"><a href="chapMSMS.html#-1"><i class="fa fa-check"></i><b>5.4</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="chapID.html"><a href="chapID.html"><i class="fa fa-check"></i><b>6</b> 代谢物鉴定</a><ul>
+<li class="chapter" data-level="6.1" data-path="chapID.html"><a href="chapID.html#section-6.1"><i class="fa fa-check"></i><b>6.1</b> 代谢物鉴定方法介绍</a></li>
+<li class="chapter" data-level="6.2" data-path="chapID.html"><a href="chapID.html#section-6.2"><i class="fa fa-check"></i><b>6.2</b> 常用鉴定工具</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="chapSTAT.html"><a href="chapSTAT.html"><i class="fa fa-check"></i><b>7</b> 基本差异分析</a><ul>
+<li class="chapter" data-level="7.1" data-path="chapSTAT.html"><a href="chapSTAT.html#section-7.1"><i class="fa fa-check"></i><b>7.1</b> 代谢物差异分析简介</a></li>
+<li class="chapter" data-level="7.2" data-path="chapSTAT.html"><a href="chapSTAT.html#fold-change"><i class="fa fa-check"></i><b>7.2</b> Fold change</a></li>
+<li class="chapter" data-level="7.3" data-path="chapSTAT.html"><a href="chapSTAT.html#section-7.3"><i class="fa fa-check"></i><b>7.3</b> 基本统计检验</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="chapSTAT.html"><a href="chapSTAT.html#students-t-test"><i class="fa fa-check"></i><b>7.3.1</b> Students’ t-Test</a></li>
+<li class="chapter" data-level="7.3.2" data-path="chapSTAT.html"><a href="chapSTAT.html#wilcoxon-test"><i class="fa fa-check"></i><b>7.3.2</b> Wilcoxon Test</a></li>
+<li class="chapter" data-level="7.3.3" data-path="chapSTAT.html"><a href="chapSTAT.html#-2"><i class="fa fa-check"></i><b>7.3.3</b> 小结</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="chapPCA.html"><a href="chapPCA.html"><i class="fa fa-check"></i><b>8</b> 主成分分析（PCA）</a><ul>
+<li class="chapter" data-level="8.1" data-path="chapPCA.html"><a href="chapPCA.html#pca"><i class="fa fa-check"></i><b>8.1</b> PCA原理及简介</a></li>
+<li class="chapter" data-level="8.2" data-path="chapPCA.html"><a href="chapPCA.html#rpca"><i class="fa fa-check"></i><b>8.2</b> 利用R进行PCA分析</a></li>
+<li class="chapter" data-level="8.3" data-path="chapPCA.html"><a href="chapPCA.html#section-8.3"><i class="fa fa-check"></i><b>8.3</b> 结果解读</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="chapPLS.html"><a href="chapPLS.html"><i class="fa fa-check"></i><b>9</b> PLS-DA和OPLS-DA</a><ul>
+<li class="chapter" data-level="9.1" data-path="chapPLS.html"><a href="chapPLS.html#pls-da"><i class="fa fa-check"></i><b>9.1</b> PLS-DA</a></li>
+<li class="chapter" data-level="9.2" data-path="chapPLS.html"><a href="chapPLS.html#opls-da"><i class="fa fa-check"></i><b>9.2</b> OPLS-DA</a></li>
+</ul></li>
+<li class="appendix"><span><b>附录</b></span></li>
+<li class="chapter" data-level="A" data-path="sound.html"><a href="sound.html"><i class="fa fa-check"></i><b>A</b> 余音绕梁</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>参考文献</a></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="blank">本书由 bookdown 强力驱动</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">基于非靶向代谢组学的化学成分差异性分析</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="basis" class="section level1">
+<h1><span class="header-section-number">第 2 章</span> R语言及环境配置</h1>
+<p>在此，我们主要基于R语言，并利用XCMS等关于代谢组学数据处理R包进行示例说明，以此来
+介绍非靶向代谢组学中LC-MS数据特点和数据处理方法，因而首先介绍环境配置。</p>
+<div id="r" class="section level2">
+<h2><span class="header-section-number">2.1</span> R语言环境安装</h2>
+<div id="r" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> R语言安装</h3>
+<p>R语言可于<a href="https://cran.r-project.org">官方网站</a>下载系统需要的版本，一般选择最新
+稳定版本。</p>
+<ul>
+<li>Windows和MacOS系统请直接下载安装文件。</li>
+<li>Linux系统可以使用系统的软件管理程序自动安装或者下载系统对应的二进制文件进行安装
+（参见<a href="https://cran.r-project.org/bin/linux/">官方介绍</a>，也可以通过下载源码包，
+自行编译安装。</li>
+<li>Linux通过系统软件管理程序安装代码如下（如果需要安装最新版可能需要安装新的软件
+源，具体请搜索查找，在此不再列出）：</li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># Ubuntu</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="fu">sudo</span> apt-get install r-base</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="co"># CentOS/Fedora/Redhat</span></a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="co"># (for CentOS/Redhat to add EPEL repositories)</span></a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="fu">sudo</span> yum install epel-release </a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="fu">sudo</span> yum install R</a></code></pre></div>
+</div>
+<div id="rstudio" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> Rstudio安装</h3>
+<p>Rstudio是目前市面上最常用的R IDE，利用Rstudio可以方便的进行R包开发和数据分析，
+因而推荐使用Rstudio作为主要IDE，
+Rstudio可以从<a href="https://www.rstudio.com/products/rstudio/download/">官方网站</a>选择
+系统对应的版本进行下载，且有免费版本使用，一般免费版本已经足够支持基本的开发和
+数据分析了</p>
+<p>如果习惯使用VIM、Emacs或者Sublime Text，亦可以找到R相关的插件，以便进行开发和
+调试，在此不再赘述。</p>
+</div>
+<div id="rstudior" class="section level3">
+<h3><span class="header-section-number">2.1.3</span> Rstudio中设置R包安装源</h3>
+<p>用Rstudio进行R包安装时，默认会使用Rstudio源(<a href="https://cran.rstudio.com/)进行安装" class="uri">https://cran.rstudio.com/)进行安装</a>，
+在部分地区和网络下载速度会比较慢，因而可以选择最近的CRAN源进行安装。</p>
+<p>选择Tools - Global Options, 在打开的对话框中找到Packages，点击Change进行选择
+（Figure <a href="basis.html#fig:Rstudio">2.1</a>)</p>
+<div class="figure"><span id="fig:Rstudio"></span>
+<img src="Figures/Fig2.1.png" alt="Change CRAN source in Rstudio" width="70%" />
+<p class="caption">
+图 2.1: Change CRAN source in Rstudio
+</p>
+</div>
+</div>
+<div id="linuxmacosr" class="section level3">
+<h3><span class="header-section-number">2.1.4</span> Linux/MacOS中安装R缺失库文件</h3>
+<p>R中有许多R包是调用C/C++开发的，以实现复杂步骤的快速运算，提高运行效率，对这类包
+或者部分其他包，在linux或MacOS中进行安装时，会提示无法找到某个lib，这种情况是系
+统中缺乏对应依赖的库文件缺失造成的，因而需要安装对应的库文件，然后再安装该R包即可。
+具体对于每个提示的缺失的lib，可以搜索对应的Error提示信息和系统信息（如Ubuntu）进行
+搜索，即可找到缺失的库文件应该通过安装哪个lib，在此建议使用Google进行搜索，如果
+使用百度，请在搜索时使用“R语言”而非“R”。</p>
+</div>
+</div>
+<div id="r" class="section level2">
+<h2><span class="header-section-number">2.2</span> 质谱数据分析相关R包安装</h2>
+<div id="bioconductor" class="section level3">
+<h3><span class="header-section-number">2.2.1</span> 安装Bioconductor</h3>
+<p><a href="https://www.bioconductor.org">Bioconductor</a>提供了R语言的生物信息软件包，主要用于
+生物数据的注释、分析、统计、以及可视化等，最新版本的安装可以参考<a href="https://www.bioconductor.org/install/">官方说明</a></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="cf">if</span> (<span class="op">!</span><span class="kw">requireNamespace</span>(<span class="st">&quot;BiocManager&quot;</span>, <span class="dt">quietly =</span> <span class="ot">TRUE</span>))</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2">    <span class="kw">install.packages</span>(<span class="st">&quot;BiocManager&quot;</span>)</a>
+<a class="sourceLine" id="cb2-3" data-line-number="3">BiocManager<span class="op">::</span><span class="kw">install</span>()</a></code></pre></div>
+<p>新版本的BiocManager包中install方法可以安装Bioconductor中的R包，亦可以安装CRAN中的
+R包，因而可以统一使用该方法进行R包安装。</p>
+<p>如果是旧版本的R，或者安装旧版本的Biocunductor，请按照一下操作</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="kw">source</span>(<span class="st">&quot;https://bioconductor.org/biocLite.R&quot;</span>)</a>
+<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">biocLite</span>(<span class="st">&quot;BiocInstaller&quot;</span>)</a>
+<a class="sourceLine" id="cb3-3" data-line-number="3">BiocInstaller<span class="op">::</span><span class="kw">biocLite</span>()</a></code></pre></div>
+</div>
+<div id="xcmscamera" class="section level3">
+<h3><span class="header-section-number">2.2.2</span> 安装XCMS及CAMERA包</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">library</span>(BiocManager)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="kw">install</span>(<span class="kw">c</span>(<span class="st">&#39;xcms&#39;</span>, <span class="st">&#39;CAMERA&#39;</span>))</a></code></pre></div>
+</div>
+</div>
+<div id="section-2.3" class="section level2">
+<h2><span class="header-section-number">2.3</span> 数据准备</h2>
+<p>在此，进行质谱数据处理的样例数据，放在GitHub的<a href="https://github.com/yddream/MSAnalysis">yddream/MSAnalysis</a>
+Repository的data文件夹里，可以克隆本Repository，直接运行Rmd文件，或者单独下载进行分析。</p>
+
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="Intro.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="chapDDA.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook/js/app.min.js"></script>
+<script src="libs/gitbook/js/lunr.js"></script>
+<script src="libs/gitbook/js/plugin-search.js"></script>
+<script src="libs/gitbook/js/plugin-sharing.js"></script>
+<script src="libs/gitbook/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/yddream/MSAnalysis/edit/master/01-Prepare.Rmd",
+"text": "编辑"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["MSAnalisis.pdf", "MSAnalisis.epub"],
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

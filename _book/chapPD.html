@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>第 4 章 基于XCMS的峰检测 | 基于非靶向代谢组学的化学成分差异性分析</title>
+  <meta name="description" content="第 4 章 基于XCMS的峰检测 | 基于非靶向代谢组学的化学成分差异性分析。" />
+  <meta name="generator" content="bookdown 0.13 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="第 4 章 基于XCMS的峰检测 | 基于非靶向代谢组学的化学成分差异性分析" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="第 4 章 基于XCMS的峰检测 | 基于非靶向代谢组学的化学成分差异性分析。" />
+  <meta name="github-repo" content="yihui/bookdown-chinese" />
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="第 4 章 基于XCMS的峰检测 | 基于非靶向代谢组学的化学成分差异性分析" />
+  
+  <meta name="twitter:description" content="第 4 章 基于XCMS的峰检测 | 基于非靶向代谢组学的化学成分差异性分析。" />
+  
+
+<meta name="author" content="Yandong Yin" />
+
+
+<meta name="date" content="2019-09-02" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="chapDDA.html"/>
+<link rel="next" href="chapMSMS.html"/>
+<script src="libs/jquery/jquery.min.js"></script>
+<link href="libs/gitbook/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook/css/plugin-fontsettings.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<link rel="stylesheet" href="css/style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">基于非靶向代谢组学的化学成分差异性分析</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>寄言</a></li>
+<li class="chapter" data-level="1" data-path="Intro.html"><a href="Intro.html"><i class="fa fa-check"></i><b>1</b> 简介</a></li>
+<li class="chapter" data-level="2" data-path="basis.html"><a href="basis.html"><i class="fa fa-check"></i><b>2</b> R语言及环境配置</a><ul>
+<li class="chapter" data-level="2.1" data-path="basis.html"><a href="basis.html#r"><i class="fa fa-check"></i><b>2.1</b> R语言环境安装</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="basis.html"><a href="basis.html#r"><i class="fa fa-check"></i><b>2.1.1</b> R语言安装</a></li>
+<li class="chapter" data-level="2.1.2" data-path="basis.html"><a href="basis.html#rstudio"><i class="fa fa-check"></i><b>2.1.2</b> Rstudio安装</a></li>
+<li class="chapter" data-level="2.1.3" data-path="basis.html"><a href="basis.html#rstudior"><i class="fa fa-check"></i><b>2.1.3</b> Rstudio中设置R包安装源</a></li>
+<li class="chapter" data-level="2.1.4" data-path="basis.html"><a href="basis.html#linuxmacosr"><i class="fa fa-check"></i><b>2.1.4</b> Linux/MacOS中安装R缺失库文件</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="basis.html"><a href="basis.html#r"><i class="fa fa-check"></i><b>2.2</b> 质谱数据分析相关R包安装</a><ul>
+<li class="chapter" data-level="2.2.1" data-path="basis.html"><a href="basis.html#bioconductor"><i class="fa fa-check"></i><b>2.2.1</b> 安装Bioconductor</a></li>
+<li class="chapter" data-level="2.2.2" data-path="basis.html"><a href="basis.html#xcmscamera"><i class="fa fa-check"></i><b>2.2.2</b> 安装XCMS及CAMERA包</a></li>
+</ul></li>
+<li class="chapter" data-level="2.3" data-path="basis.html"><a href="basis.html#section-2.3"><i class="fa fa-check"></i><b>2.3</b> 数据准备</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="chapDDA.html"><a href="chapDDA.html"><i class="fa fa-check"></i><b>3</b> DDA-MS技术概要</a><ul>
+<li class="chapter" data-level="3.1" data-path="chapDDA.html"><a href="chapDDA.html#dda"><i class="fa fa-check"></i><b>3.1</b> DDA技术介绍</a></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="chapPD.html"><a href="chapPD.html"><i class="fa fa-check"></i><b>4</b> 基于XCMS的峰检测</a><ul>
+<li class="chapter" data-level="4.1" data-path="chapPD.html"><a href="chapPD.html#lc-ms"><i class="fa fa-check"></i><b>4.1</b> LC-MS中峰检测简介</a></li>
+<li class="chapter" data-level="4.2" data-path="chapPD.html"><a href="chapPD.html#section-4.2"><i class="fa fa-check"></i><b>4.2</b> 原始数据转换</a></li>
+<li class="chapter" data-level="4.3" data-path="chapPD.html"><a href="chapPD.html#xcms"><i class="fa fa-check"></i><b>4.3</b> 利用XCMS进行峰检测</a><ul>
+<li class="chapter" data-level="4.3.1" data-path="chapPD.html"><a href="chapPD.html#xcms3"><i class="fa fa-check"></i><b>4.3.1</b> xcms3中峰检测的新方法</a></li>
+<li class="chapter" data-level="4.3.2" data-path="chapPD.html"><a href="chapPD.html#xcms"><i class="fa fa-check"></i><b>4.3.2</b> xcms中传统的峰检测方法</a></li>
+</ul></li>
+<li class="chapter" data-level="4.4" data-path="chapPD.html"><a href="chapPD.html#camera"><i class="fa fa-check"></i><b>4.4</b> 利用CAMERA进行峰注释</a><ul>
+<li class="chapter" data-level="4.4.1" data-path="chapPD.html"><a href="chapPD.html#camera"><i class="fa fa-check"></i><b>4.4.1</b> CAMERA包介绍</a></li>
+<li class="chapter" data-level="4.4.2" data-path="chapPD.html"><a href="chapPD.html#section-4.4.2"><i class="fa fa-check"></i><b>4.4.2</b> 小结</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="chapMSMS.html"><a href="chapMSMS.html"><i class="fa fa-check"></i><b>5</b> 二级谱图提取</a><ul>
+<li class="chapter" data-level="5.1" data-path="chapDDA.html"><a href="chapDDA.html#dda"><i class="fa fa-check"></i><b>5.1</b> DDA数据里的二级谱图</a></li>
+<li class="chapter" data-level="5.2" data-path="chapMSMS.html"><a href="chapMSMS.html#proteowizard"><i class="fa fa-check"></i><b>5.2</b> 利用ProteoWizard进行二级谱图提取</a><ul>
+<li class="chapter" data-level="5.2.1" data-path="chapMSMS.html"><a href="chapMSMS.html#section-5.2.1"><i class="fa fa-check"></i><b>5.2.1</b> 普图提取</a></li>
+<li class="chapter" data-level="5.2.2" data-path="chapMSMS.html"><a href="chapMSMS.html#section-5.2.2"><i class="fa fa-check"></i><b>5.2.2</b> 与峰检测结果进行结合</a></li>
+</ul></li>
+<li class="chapter" data-level="5.3" data-path="chapPD.html"><a href="chapPD.html#xcms"><i class="fa fa-check"></i><b>5.3</b> 利用XCMS进行二级谱图提取</a></li>
+<li class="chapter" data-level="5.4" data-path="chapMSMS.html"><a href="chapMSMS.html#-1"><i class="fa fa-check"></i><b>5.4</b> 小结</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="chapID.html"><a href="chapID.html"><i class="fa fa-check"></i><b>6</b> 代谢物鉴定</a><ul>
+<li class="chapter" data-level="6.1" data-path="chapID.html"><a href="chapID.html#section-6.1"><i class="fa fa-check"></i><b>6.1</b> 代谢物鉴定方法介绍</a></li>
+<li class="chapter" data-level="6.2" data-path="chapID.html"><a href="chapID.html#section-6.2"><i class="fa fa-check"></i><b>6.2</b> 常用鉴定工具</a></li>
+</ul></li>
+<li class="chapter" data-level="7" data-path="chapSTAT.html"><a href="chapSTAT.html"><i class="fa fa-check"></i><b>7</b> 基本差异分析</a><ul>
+<li class="chapter" data-level="7.1" data-path="chapSTAT.html"><a href="chapSTAT.html#section-7.1"><i class="fa fa-check"></i><b>7.1</b> 代谢物差异分析简介</a></li>
+<li class="chapter" data-level="7.2" data-path="chapSTAT.html"><a href="chapSTAT.html#fold-change"><i class="fa fa-check"></i><b>7.2</b> Fold change</a></li>
+<li class="chapter" data-level="7.3" data-path="chapSTAT.html"><a href="chapSTAT.html#section-7.3"><i class="fa fa-check"></i><b>7.3</b> 基本统计检验</a><ul>
+<li class="chapter" data-level="7.3.1" data-path="chapSTAT.html"><a href="chapSTAT.html#students-t-test"><i class="fa fa-check"></i><b>7.3.1</b> Students’ t-Test</a></li>
+<li class="chapter" data-level="7.3.2" data-path="chapSTAT.html"><a href="chapSTAT.html#wilcoxon-test"><i class="fa fa-check"></i><b>7.3.2</b> Wilcoxon Test</a></li>
+<li class="chapter" data-level="7.3.3" data-path="chapSTAT.html"><a href="chapSTAT.html#-2"><i class="fa fa-check"></i><b>7.3.3</b> 小结</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="8" data-path="chapPCA.html"><a href="chapPCA.html"><i class="fa fa-check"></i><b>8</b> 主成分分析（PCA）</a><ul>
+<li class="chapter" data-level="8.1" data-path="chapPCA.html"><a href="chapPCA.html#pca"><i class="fa fa-check"></i><b>8.1</b> PCA原理及简介</a></li>
+<li class="chapter" data-level="8.2" data-path="chapPCA.html"><a href="chapPCA.html#rpca"><i class="fa fa-check"></i><b>8.2</b> 利用R进行PCA分析</a></li>
+<li class="chapter" data-level="8.3" data-path="chapPCA.html"><a href="chapPCA.html#section-8.3"><i class="fa fa-check"></i><b>8.3</b> 结果解读</a></li>
+</ul></li>
+<li class="chapter" data-level="9" data-path="chapPLS.html"><a href="chapPLS.html"><i class="fa fa-check"></i><b>9</b> PLS-DA和OPLS-DA</a><ul>
+<li class="chapter" data-level="9.1" data-path="chapPLS.html"><a href="chapPLS.html#pls-da"><i class="fa fa-check"></i><b>9.1</b> PLS-DA</a></li>
+<li class="chapter" data-level="9.2" data-path="chapPLS.html"><a href="chapPLS.html#opls-da"><i class="fa fa-check"></i><b>9.2</b> OPLS-DA</a></li>
+</ul></li>
+<li class="appendix"><span><b>附录</b></span></li>
+<li class="chapter" data-level="A" data-path="sound.html"><a href="sound.html"><i class="fa fa-check"></i><b>A</b> 余音绕梁</a></li>
+<li class="chapter" data-level="" data-path="references.html"><a href="references.html"><i class="fa fa-check"></i>参考文献</a></li>
+<li class="divider"></li>
+<li><a href="https://bookdown.org" target="blank">本书由 bookdown 强力驱动</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">基于非靶向代谢组学的化学成分差异性分析</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="chapPD" class="section level1">
+<h1><span class="header-section-number">第 4 章</span> 基于XCMS的峰检测</h1>
+<div id="lc-ms" class="section level2">
+<h2><span class="header-section-number">4.1</span> LC-MS中峰检测简介</h2>
+<p>在LC-MS中，每一个色谱峰（peak）代表一个代谢物，峰检测(peak detection或peak spotting)
+主要目的是检测样品中存在的代谢物，并将多个样品中属于同一个代谢物的色谱峰归类到一起
+（称之为峰分组（peak grouping），分组之后的代表多个样品中同一个代谢物峰组称之为一个
+feature）。</p>
+<p>目前，最常用的峰检测算法是centWave，该算法灵敏度高，可以自动对峰宽在指定范围内利用
+小波分析进行判断，从而判定峰的位置和起止点，但该方法在峰的起止点的判定上由于其算法的
+局限性，并不能做到非常准确的判断。</p>
+<p>峰分组是在单个样品峰检测的基础上，考虑保留时间（RT）漂移等因素，对属于同一个代谢物
+的峰进行分组，在峰分组之前需要峰对齐（peak alignment），在xcms中最常用的峰对齐方法
+是Obi-Warp，该方法利用采集到的样品数据中的mz，intensity和RT信息进行全局三维对齐，
+对齐之后的RT用于峰分组。一般xcms中常用峰密度分布（group.density）方法进行分组。</p>
+<p>在LC-MS的峰检测过程中，但样品的峰检测、跨样品的RT校正（峰对齐）和分组是非常重要且
+必不可少的过程，缺少任何一步，都会对数据处理质量造成影响，而在某些特定条件下，
+Obi-Warp方法会失效，因而在数据处理时要注意看xcms反馈的提示信息，并绘制RT漂移的曲线
+方便检查数据是否进行了正确的RT校正。</p>
+</div>
+<div id="section-4.2" class="section level2">
+<h2><span class="header-section-number">4.2</span> 原始数据转换</h2>
+<p>MS采集的数据，不同的仪器厂商有不同的数据记录方式，而利用XCMS等数据处理软件进行处理
+之前，需要将原始数据转换为通用的软件支持的格式，xcms支持xml、mzData、mzXML、mzML、
+netCDF等数据格式，因而在利用xcms进行数据处理之前，需要对于质谱采集的原始数据进行
+格式转换，一般可使用ProteoWizard等,具体可以参考<a href="https://ccms-ucsd.github.io/GNPSDocumentation/fileconversion/">GNPS的文档介绍</a>，
+在此不再赘述。目前ProteoWizard数据转换支持情况可参见Figure <a href="chapPD.html#fig:datacovert">4.1</a><span class="citation">(GNPS <a href="#ref-dtcoversion">2019</a>)</span></p>
+<div class="figure"><span id="fig:datacovert"></span>
+<img src="Figures/Fig4.1.png" alt="Converting data to MZML/MZXML using ProteoWizard[@Wang:2019ig]"  />
+<p class="caption">
+图 4.1: Converting data to MZML/MZXML using ProteoWizard<span class="citation">(Wang, Yin, and Zhu <a href="#ref-Wang:2019ig">2019</a>)</span>
+</p>
+</div>
+</div>
+<div id="xcms" class="section level2">
+<h2><span class="header-section-number">4.3</span> 利用XCMS进行峰检测</h2>
+<p>xcms峰检测有两种方法，一种是在xcms3中新近出现的findChromPeaks方法，该方法有很多
+新的功能和特性，并方便借用xcms内部的绘图方法，但目前其输出数据格式与其他的常用软件
+（如CAMERA）兼容性问题；另一种是传统的xcmsSet方法，由于历史积累和相关软件更新，该
+方法目前使用仍较为广泛。以下分别介绍xcms中峰检测的findChromPeaks和xcmsSet方法</p>
+<div id="xcms3" class="section level3">
+<h3><span class="header-section-number">4.3.1</span> xcms3中峰检测的新方法</h3>
+<div id="section-4.3.1.1" class="section level4">
+<h4><span class="header-section-number">4.3.1.1</span> 数据导入</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="kw">require</span>(xcms)</a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co">## Get the full path to the data files(mzxml)</span></a>
+<a class="sourceLine" id="cb5-3" data-line-number="3">files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&#39;Data&#39;</span>, <span class="dt">pattern =</span> <span class="st">&#39;(?i)mzxml$&#39;</span>,<span class="dt">full.names =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb5-4" data-line-number="4">        <span class="dt">recursive =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb5-5" data-line-number="5"><span class="co">## Create a phenodata data.frame</span></a>
+<a class="sourceLine" id="cb5-6" data-line-number="6">pd &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">sample_name =</span> <span class="kw">sub</span>(<span class="kw">basename</span>(files), <span class="dt">pattern =</span> <span class="st">&quot;.mzXML&quot;</span>,</a>
+<a class="sourceLine" id="cb5-7" data-line-number="7">                   <span class="dt">replacement =</span> <span class="st">&quot;&quot;</span>, <span class="dt">fixed =</span> <span class="ot">TRUE</span>),</a>
+<a class="sourceLine" id="cb5-8" data-line-number="8">         <span class="dt">sample_group =</span> <span class="kw">c</span>(<span class="kw">rep</span>(<span class="st">&quot;grp1&quot;</span>, <span class="dv">2</span>), <span class="kw">rep</span>(<span class="st">&quot;grp2&quot;</span>, <span class="dv">1</span>)),</a>
+<a class="sourceLine" id="cb5-9" data-line-number="9">         <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>) </a>
+<a class="sourceLine" id="cb5-10" data-line-number="10">rawData &lt;-<span class="st"> </span><span class="kw">readMSData</span>(<span class="dt">files =</span> files, <span class="dt">pdata =</span> <span class="kw">new</span>(<span class="st">&quot;NAnnotatedDataFrame&quot;</span>, pd),</a>
+<a class="sourceLine" id="cb5-11" data-line-number="11">               <span class="dt">mode =</span> <span class="st">&quot;onDisk&quot;</span>) </a>
+<a class="sourceLine" id="cb5-12" data-line-number="12">pd</a></code></pre></div>
+<pre><code>##   sample_name sample_group
+## 1    DDAdata1         grp1
+## 2    DDAdata2         grp1
+## 3    DDAdata3         grp2</code></pre>
+<ul>
+<li>注：readMSData是MSnbase包中读取质谱数据的方法，返回结果为一个属于‘OnDiskMSnExp’
+类的对象。</li>
+</ul>
+</div>
+<div id="centwave" class="section level4">
+<h4><span class="header-section-number">4.3.1.2</span> 利用centWave算法进行峰检测</h4>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># xcms 3 new methods</span></a>
+<a class="sourceLine" id="cb7-2" data-line-number="2">cwp &lt;-<span class="st"> </span><span class="kw">CentWaveParam</span>(<span class="dt">peakwidth =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">50</span>), <span class="dt">noise =</span> <span class="dv">1000</span>, <span class="dt">snthresh =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb7-3" data-line-number="3">xdata &lt;-<span class="st"> </span><span class="kw">findChromPeaks</span>(rawData, <span class="dt">param =</span> cwp) </a>
+<a class="sourceLine" id="cb7-4" data-line-number="4"><span class="kw">head</span>(xdata<span class="op">@</span>msFeatureData<span class="op">$</span>chromPeaks)</a></code></pre></div>
+<pre><code>##           mz mzmin mzmax    rt rtmin rtmax  into  intb
+## CP0001 702.2 702.2 702.2 45.65 43.14 48.05  8450  8446
+## CP0002 554.2 554.2 554.2 46.84 38.01 49.90 10025 10020
+## CP0003 628.2 628.2 628.2 46.24 43.96 52.94 16639 16634
+## CP0004 629.2 629.2 629.2 46.24 43.14 49.30  8768  8763
+## CP0005 355.1 355.1 355.1 46.84 41.47 53.53  5427  5334
+## CP0006 372.1 372.1 372.1 46.84 41.22 54.15  7815  7351
+##         maxo   sn sample
+## CP0001  5619 5618      1
+## CP0002  6767 2592      1
+## CP0003 10101 1630      1
+## CP0004  5320 1034      1
+## CP0005  3013   80      1
+## CP0006  4097   85      1</code></pre>
+</div>
+<div id="peak-alignment-grouping" class="section level4">
+<h4><span class="header-section-number">4.3.1.3</span> 峰对齐及分组(peak alignment &amp; grouping)</h4>
+<p>同一代谢物在不同样品的流出时间会略有差异，因而对于峰检测的结果需要进行对齐(alignment)并将不同样品中的统一代谢物分到各自可以表征该代谢物的峰组(peak group)中(代谢组学中一般成为feature)，从而进一步比较不同样品间统一代谢物的含量。通常我们可以使用’obiwarp’算法进行peak alignment，然后利用’density’算法进行peak grouping.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1"><span class="co">## Correspondence: group peaks across samples.</span></a>
+<a class="sourceLine" id="cb9-2" data-line-number="2">pdp &lt;-<span class="st"> </span><span class="kw">PeakDensityParam</span>(<span class="dt">sampleGroups =</span> xdata<span class="op">$</span>sample_group,</a>
+<a class="sourceLine" id="cb9-3" data-line-number="3">            <span class="dt">minFraction =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb9-4" data-line-number="4">xdata &lt;-<span class="st"> </span><span class="kw">groupChromPeaks</span>(xdata, <span class="dt">param =</span> pdp)</a>
+<a class="sourceLine" id="cb9-5" data-line-number="5"><span class="co">## Now the retention time correction.</span></a>
+<a class="sourceLine" id="cb9-6" data-line-number="6">pgp &lt;-<span class="st"> </span><span class="kw">PeakGroupsParam</span>(<span class="dt">minFraction =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb9-7" data-line-number="7"><span class="co">## Get the peak groups that would be used for alignment.</span></a>
+<a class="sourceLine" id="cb9-8" data-line-number="8"><span class="co"># (grouping with &#39;peakgroup&#39; method)</span></a>
+<a class="sourceLine" id="cb9-9" data-line-number="9">xdata &lt;-<span class="st"> </span><span class="kw">adjustRtime</span>(xdata, <span class="dt">param =</span> pgp)</a>
+<a class="sourceLine" id="cb9-10" data-line-number="10"><span class="co"># otherwise, one can also use &#39;Obi-warp&#39; method for alignment</span></a>
+<a class="sourceLine" id="cb9-11" data-line-number="11">xdata &lt;-<span class="st"> </span><span class="kw">adjustRtime</span>(xdata, <span class="dt">param =</span> <span class="kw">ObiwarpParam</span>(<span class="dt">binSize =</span> <span class="fl">0.6</span>))</a>
+<a class="sourceLine" id="cb9-12" data-line-number="12"><span class="co">## Grouping with RT corrected peaks </span></a>
+<a class="sourceLine" id="cb9-13" data-line-number="13">pdp &lt;-<span class="st"> </span><span class="kw">PeakDensityParam</span>(<span class="dt">sampleGroups =</span> xdata<span class="op">$</span>sample_group,</a>
+<a class="sourceLine" id="cb9-14" data-line-number="14">                        <span class="dt">minFraction =</span> <span class="fl">0.4</span>, <span class="dt">bw =</span> <span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb9-15" data-line-number="15">xdata &lt;-<span class="st"> </span><span class="kw">groupChromPeaks</span>(xdata, <span class="dt">param =</span> pdp)</a></code></pre></div>
+<p>####峰补齐(filling gaps)
+对于峰检测过程中会有部分feature在某些样品中未检出对应代谢物峰的清醒，xcms可以根据已检出feature的信息，在相应样品中强行提取EIC信息，从而计算该代谢物在该样品中的含量信息，我们一般称之为filling gaps</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">xdata &lt;-<span class="st"> </span><span class="kw">fillChromPeaks</span>(xdata)</a></code></pre></div>
+</div>
+</div>
+<div id="xcms" class="section level3">
+<h3><span class="header-section-number">4.3.2</span> xcms中传统的峰检测方法</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1"><span class="kw">require</span>(xcms)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co">## Get the full path to the data files(mzxml)</span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3">files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="st">&#39;Data&#39;</span>, <span class="dt">pattern =</span> <span class="st">&#39;(?i)mzxml$&#39;</span>,<span class="dt">full.names =</span> <span class="ot">TRUE</span>,</a>
+<a class="sourceLine" id="cb11-4" data-line-number="4">        <span class="dt">recursive =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb11-5" data-line-number="5">xdata &lt;-<span class="st"> </span><span class="kw">xcmsSet</span>(files, <span class="dt">method =</span> <span class="st">&#39;centWave&#39;</span>, <span class="dt">peakwidth =</span> <span class="kw">c</span>(<span class="dv">5</span>, <span class="dv">50</span>), <span class="dt">noise=</span> <span class="dv">1000</span>, <span class="dt">snthr =</span> <span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb11-6" data-line-number="6"><span class="co"># peak alignment &amp; groups</span></a>
+<a class="sourceLine" id="cb11-7" data-line-number="7"><span class="co"># peakgroups method</span></a>
+<a class="sourceLine" id="cb11-8" data-line-number="8">xdata &lt;-<span class="st"> </span>xcms<span class="op">::</span><span class="kw">group</span>(xdata, <span class="dt">minfrac =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb11-9" data-line-number="9">xdata&lt;-<span class="st"> </span><span class="kw">retcor</span>(xdata, <span class="dt">method =</span> <span class="st">&#39;peakgroups&#39;</span>, <span class="dt">plottype =</span> <span class="st">&#39;deviation&#39;</span>)</a>
+<a class="sourceLine" id="cb11-10" data-line-number="10"><span class="co"># or obiwarp method</span></a>
+<a class="sourceLine" id="cb11-11" data-line-number="11">xdata&lt;-<span class="st"> </span><span class="kw">retcor</span>(xdata, <span class="dt">method =</span> <span class="st">&#39;obiwarp&#39;</span>, <span class="dt">plottype =</span> <span class="st">&#39;deviation&#39;</span>, <span class="dt">profStep =</span> <span class="fl">0.6</span>)</a>
+<a class="sourceLine" id="cb11-12" data-line-number="12">xdata&lt;-<span class="st"> </span>xcms<span class="op">::</span><span class="kw">group</span>(xdata, <span class="dt">bw =</span> <span class="dv">20</span>, <span class="dt">minfrac =</span> <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb11-13" data-line-number="13"><span class="co"># fill gaps</span></a>
+<a class="sourceLine" id="cb11-14" data-line-number="14">xdata &lt;-<span class="kw">fillPeaks</span>(xdata)</a></code></pre></div>
+<p>###补充说明
+findChromPeaks是xcms中用于进行峰检测的新方法，输入值为’OnDiskMSnExp’对象和峰检测参数对象，CentWaveParam用以创建’CentWaveParam’对象，该对象设置使用’centWave’算法进行峰检测时所需要的参数，其中比较常用的参数如下：
+- ppm – 峰检测时MS1的m/z tolerance，以ppm为单位
+- peakwidth – 长度为2的向量，设置峰检测时峰宽范围，事实上该参数对应的每个峰可以跨越多少个质谱检测的scan，而非多少秒
+- snthresh – 峰检测时信噪比要求
+- return.type – 返回数据类型，可以根据要求返回’XCMSnExp’类数据（默认）、传统的’xcmsSet’类以及’list’</p>
+<p>xcmsSet是xcms中可以用于峰检测的传统方法，使用method参数设置峰检测算法，另外根据不同的峰检测算法可以设置该算法需要的参数，详情请参考xcms官方文档。其中’centWave’算法所对应的参数与’CentWaveParam’设置基本一致。</p>
+<p>峰检测时除了可以使用centWave算法外，还可以使用其他算法，如’centWaveWithPredIsoROIs’、‘massifquant’、‘matchedFilter’、‘MSW’等，分别对应’CentWavePredIsoParam’、‘MassifquantParam’、‘MatchedFilterParam’、’MSWParam’参数设置，详情请参考xcms官方文档或者使用R help</p>
+</div>
+</div>
+<div id="camera" class="section level2">
+<h2><span class="header-section-number">4.4</span> 利用CAMERA进行峰注释</h2>
+<p>借助LC-MS技术检测得到的代谢物峰包含了大量的同位素峰和加合物峰信息，对数据的进一步造成一定干扰，因而做好同位素和加合物峰的注释对代谢组学数据分析具有重要的辅助作用。常见的注释工具有CAMERA和RAMCluster等，在这里主要介绍基于CAMERA的代谢物峰注释基本操作和其中的一些注意事项。</p>
+<div id="camera" class="section level3">
+<h3><span class="header-section-number">4.4.1</span> CAMERA包介绍</h3>
+<p>CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注释，从而标记峰与峰之间的同位素和加合物关系，
+具体原理请参考Carsten Kuhl等人2012年发表于分析化学(Analytical Chemistory)上的文章<span class="citation">(Kuhl et al. <a href="#ref-Kuhl:2011fy">2012</a>)</span>。
+该R包具体相关信息可以参考<a href="https://bioconductor.org/packages/release/bioc/html/CAMERA.html">Bioconductor网站</a>，关于利用CAMERA进行注释的详细方法和例子可以参考<a href="https://bioconductor.org/packages/release/bioc/vignettes/CAMERA/inst/doc/CAMERA.pdf">最新文档</a>，</p>
+<div id="section-4.4.1.1" class="section level4">
+<h4><span class="header-section-number">4.4.1.1</span> 注释前的预备工作</h4>
+<p>峰检测完成后则可以开始CAMERA注释的操作了。在正式注释同位素和加合物峰之前，需要对峰检测数据进行进一步的处理，创建CAMERA注释对象，并进行分组并检验分组结果</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1"><span class="kw">require</span>(CAMERA)</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#Create an xsAnnotate object</span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3">xa &lt;-<span class="st"> </span><span class="kw">xsAnnotate</span>(xdata)</a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#Group after RT value of the xcms grouped peak</span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5">xag &lt;-<span class="st"> </span><span class="kw">groupFWHM</span>(xa, <span class="dt">perfwhm=</span><span class="fl">0.6</span>)</a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co">#Verify grouping</span></a>
+<a class="sourceLine" id="cb12-7" data-line-number="7">xac &lt;-<span class="st"> </span><span class="kw">groupCorr</span>(xag)</a></code></pre></div>
+</div>
+<div id="section-4.4.1.2" class="section level4">
+<h4><span class="header-section-number">4.4.1.2</span> 同位素峰注释</h4>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1"><span class="co">#Annotate isotopes, could be done before groupCorr</span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2">xac.isotope &lt;-<span class="st"> </span><span class="kw">findIsotopes</span>(xac)</a></code></pre></div>
+</div>
+<div id="section-4.4.1.3" class="section level4">
+<h4><span class="header-section-number">4.4.1.3</span> 加合物峰注释</h4>
+<p>在同位素峰注释完成之后，才可以进行加合物峰的注释。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1"><span class="co">#Annotate adducts</span></a>
+<a class="sourceLine" id="cb14-2" data-line-number="2">xac.addu &lt;-<span class="st"> </span><span class="kw">findAdducts</span>(xac.isotope, <span class="dt">polarity=</span><span class="st">&quot;positive&quot;</span>)</a></code></pre></div>
+<p>在这里需要注意的是，加合物的注释可以自己给定加合物注释的规则(rules)。事实上，CAMERA本身内置了非常多的加合物形式的规则，但对于不同的LC体系，产生的加合物形式会有所不同，因而，对于特定的实验来说，最好根据大家对实验中采用的LC体系的了解，自己制定针对性的注释规则。对于CAMERA中的加合物注释规则，大家可以使用以下代码提取，在自己制定规则的时候，可以用做参考。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1"><span class="co"># list all rule files (for positive/negative modes, primary/extende rules)</span></a>
+<a class="sourceLine" id="cb15-2" data-line-number="2">files &lt;-<span class="st"> </span><span class="kw">list.files</span>(<span class="kw">system.file</span>(<span class="st">&#39;rules&#39;</span>, <span class="dt">package =</span> <span class="st">&quot;CAMERA&quot;</span>), <span class="dt">full.names =</span> <span class="ot">TRUE</span>)</a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="co"># show head lines of sample rule</span></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="kw">head</span>(<span class="kw">read.csv</span>(files[<span class="dv">4</span>]))</a></code></pre></div>
+<pre><code>##       name nmol charge massdiff oidscore quasi ips
+## 1   [M+H]+    1      1    1.007        1     1   1
+## 2  [M+Na]+    1      1   22.989        8     1   1
+## 3   [M+K]+    1      1   38.963       10     1   1
+## 4 [M+NH4]+    1      1   18.034       16     1   1</code></pre>
+<p>对于以上每一列表示的具体含义，可以参考使用文档‘Create rule table’章节（Bioconductor v3.9 在14页，<a href="https://bioconductor.org/packages/release/bioc/vignettes/CAMERA/inst/doc/CAMERA.pdf">Section 6</a>）</p>
+<p>如果需要使用自定义的规则，请参考以下代码：</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" data-line-number="1">my.rules &lt;-<span class="st"> </span><span class="kw">read.csv</span>(files[<span class="dv">4</span>])</a>
+<a class="sourceLine" id="cb17-2" data-line-number="2">xac.addu &lt;-<span class="st"> </span><span class="kw">findAdducts</span>(xac.isotope, <span class="dt">rules =</span> my.rules, <span class="dt">polarity=</span><span class="st">&quot;positive&quot;</span>)</a></code></pre></div>
+<p>注：polarity请根据自己实验采集数据时的离子模式正确设置，在不设置自定义规则的时候，CAMERA会调用内置的与该离子模式相同的规则（包含primary和extended）进行注释。</p>
+</div>
+<div id="section-4.4.1.4" class="section level4">
+<h4><span class="header-section-number">4.4.1.4</span> 注释结果表格输出</h4>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" data-line-number="1"><span class="co">#Get final peaktable and store on harddrive</span></a>
+<a class="sourceLine" id="cb18-2" data-line-number="2">res.anno &lt;-<span class="st"> </span><span class="kw">getPeaklist</span>(xac.addu)</a>
+<a class="sourceLine" id="cb18-3" data-line-number="3"><span class="kw">write.csv</span>(res.anno,<span class="dt">file=</span><span class="st">&quot;Result.csv&quot;</span>)</a>
+<a class="sourceLine" id="cb18-4" data-line-number="4"><span class="kw">head</span>(res.anno)</a></code></pre></div>
+<p>对于adduct列，我们看到的最后部分的数字表示该加合物形式对应的M的质荷比，方括号内显示的是M的加合物形式，方括号后面的‘+’号则表示该加合物形式的电荷数量。而同位素注释结果中最前面的方括号表示该同位素所对应的id，id相同的峰为同一个M峰的不同同位素峰，第二个方括号中的M+x表示同位素峰中的同位素情况，方括号外面的内容则表示电荷情况。pcgroup列则是在预处理时CAMERA生成的group信息</p>
+</div>
+</div>
+<div id="section-4.4.2" class="section level3">
+<h3><span class="header-section-number">4.4.2</span> 小结</h3>
+<p>峰检测是质谱数据处理的基础，利用峰检测可以获取样品中检测到的信号的基本信息，如mz、RT、峰面积等，这些信息是代谢物鉴定和差异分析的基础，利用xcms进行峰检测，并借助于CAMERA进行峰注释，可以有效的检测到样品中含有的代谢物信息，并去除部分冗余。除了xcms，还有很多同样优秀的质谱数据处理分析的软件，如OpenMS，MZ Mine2，MS-DIAL等，在此暂不做详细介绍，如有兴趣请参考相应软件的官方说明。</p>
+
+</div>
+</div>
+</div>
+<h3>参考文献</h3>
+<div id="refs" class="references">
+<div id="ref-dtcoversion">
+<p>GNPS. 2019. “Mass Spectrometry File Conversion.” <a href="https://ccms-ucsd.github.io/GNPSDocumentation/fileconversion/">https://ccms-ucsd.github.io/GNPSDocumentation/fileconversion/</a>.</p>
+</div>
+<div id="ref-Kuhl:2011fy">
+<p>Kuhl, Carsten, Ralf Tautenhahn, Christoph Böttcher, Tony R Larson, and Steffen Neumann. 2012. “CAMERA: an integrated strategy for compound spectra extraction and annotation of liquid chromatography/mass spectrometry data sets.” <em>Analytical Chemistry</em> 84 (1): 283–89.</p>
+</div>
+<div id="ref-Wang:2019ig">
+<p>Wang, Ruohong, Yandong Yin, and Zheng-Jiang Zhu. 2019. “Advancing untargeted metabolomics using data-independent acquisition mass spectrometry technology.” <em>Analytical and Bioanalytical Chemistry</em> 411 (19): 4349–57.</p>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="chapDDA.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="chapMSMS.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook/js/app.min.js"></script>
+<script src="libs/gitbook/js/lunr.js"></script>
+<script src="libs/gitbook/js/plugin-search.js"></script>
+<script src="libs/gitbook/js/plugin-sharing.js"></script>
+<script src="libs/gitbook/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook/js/jquery.highlight.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": true,
+"facebook": false,
+"twitter": true,
+"google": false,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "google", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": "https://github.com/yddream/MSAnalysis/edit/master/03-PeakDetection.Rmd",
+"text": "编辑"
+},
+"history": {
+"link": null,
+"text": null
+},
+"download": ["MSAnalisis.pdf", "MSAnalisis.epub"],
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

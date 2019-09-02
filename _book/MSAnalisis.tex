@@ -1,0 +1,702 @@
+\documentclass[]{ctexbook}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{xltxtra,xunicode}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[b5paper,tmargin=2.5cm,bmargin=2.5cm,lmargin=3.5cm,rmargin=2.5cm]{geometry}
+\usepackage[unicode=true]{hyperref}
+\PassOptionsToPackage{usenames,dvipsnames}{color} % color is loaded by hyperref
+\hypersetup{
+            pdftitle={基于非靶向代谢组学的化学成分差异性分析},
+            pdfauthor={Yandong Yin},
+            colorlinks=true,
+            linkcolor=Maroon,
+            citecolor=Blue,
+            urlcolor=Blue,
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{natbib}
+\bibliographystyle{apalike}
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\usepackage{longtable,booktabs}
+% Fix footnotes in tables (requires footnote package)
+\IfFileExists{footnote.sty}{\usepackage{footnote}\makesavenoteenv{long table}}{}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
+\usepackage{booktabs}
+\usepackage{longtable}
+
+\usepackage{framed,color}
+\definecolor{shadecolor}{RGB}{248,248,248}
+
+\renewcommand{\textfraction}{0.05}
+\renewcommand{\topfraction}{0.8}
+\renewcommand{\bottomfraction}{0.8}
+\renewcommand{\floatpagefraction}{0.75}
+
+\let\oldhref\href
+\renewcommand{\href}[2]{#2\footnote{\url{#1}}}
+
+\makeatletter
+\newenvironment{kframe}{%
+\medskip{}
+\setlength{\fboxsep}{.8em}
+ \def\at@end@of@kframe{}%
+ \ifinner\ifhmode%
+  \def\at@end@of@kframe{\end{minipage}}%
+  \begin{minipage}{\columnwidth}%
+ \fi\fi%
+ \def\FrameCommand##1{\hskip\@totalleftmargin \hskip-\fboxsep
+ \colorbox{shadecolor}{##1}\hskip-\fboxsep
+     % There is no \\@totalrightmargin, so:
+     \hskip-\linewidth \hskip-\@totalleftmargin \hskip\columnwidth}%
+ \MakeFramed {\advance\hsize-\width
+   \@totalleftmargin\z@ \linewidth\hsize
+   \@setminipage}}%
+ {\par\unskip\endMakeFramed%
+ \at@end@of@kframe}
+\makeatother
+
+\makeatletter
+\@ifundefined{Shaded}{
+}{\renewenvironment{Shaded}{\begin{kframe}}{\end{kframe}}}
+\@ifpackageloaded{fancyvrb}{%
+  % https://github.com/CTeX-org/ctex-kit/issues/331
+  \RecustomVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\},formatcom=\xeCJKVerbAddon}%
+}{}
+\makeatother
+
+\usepackage{makeidx}
+\makeindex
+
+\urlstyle{tt}
+
+\usepackage{amsthm}
+\makeatletter
+\def\thm@space@setup{%
+  \thm@preskip=8pt plus 2pt minus 4pt
+  \thm@postskip=\thm@preskip
+}
+\makeatother
+
+\frontmatter
+
+\title{基于非靶向代谢组学的化学成分差异性分析}
+\author{Yandong Yin}
+\date{2019-09-02}
+
+\begin{document}
+\maketitle
+
+
+\thispagestyle{empty}
+
+\begin{center}
+
+\end{center}
+
+\setlength{\abovedisplayskip}{-5pt}
+\setlength{\abovedisplayshortskip}{-5pt}
+
+{
+\setcounter{tocdepth}{2}
+\tableofcontents
+}
+\listoftables
+\listoffigures
+\hypertarget{Words}{%
+\chapter*{寄言}\label{Words}}
+
+
+借此为代谢组学贡献绵薄之力
+
+\hypertarget{Intro}{%
+\chapter{简介}\label{Intro}}
+
+液相色谱-质谱联用技术（LC-MS）在代谢组学中有着非常广泛的应用，代谢组学借助于LC-MS，可以广泛的筛查样品中存在的代谢物（小分子化合物）及其含量，具有高通量、高灵敏度、动态范围广等特点，可以实现优质的代谢组学分析。根据实验目的，一般我们可以采用靶向代谢组学方法进行特定目标代谢物的高准确度定量分析，如MRM/SRM/PRM等技术，也可以采用非靶向代谢组学筛查样品中包含的代谢物及其差异，从而实现广谱的代谢物筛查，根据质谱中数据采集方式的不同，分为数据依赖型采集（DDA）和数据非依赖型采集（DIA）两类(Figure \ref{fig:DDAvsDIA})。
+
+\begin{figure}
+\centering
+\includegraphics{Figures/Fig1.1.png}
+\caption{\label{fig:DDAvsDIA}DDA and DIA MS techniques\citep{Wang:2019ig}}
+\end{figure}
+
+其中，DDA技术根据一级质谱扫描时扫描带的离子的强度信息，选择强度较高的部分离子分多次进行碎裂，每次得到于所选择单个目标离子对应的二级谱图，从而实现借助于二级谱图的代谢物鉴定。而DIA技术则是每次选择全部（MSE/AIF）或者部分（SWATH）母离子进行碎裂，理论上可以得到所有母离子的二级信息，然而从数据采集和记录本身无法直接获取每个母离子对应的二级谱图，因而数据分析较为复杂。综合而言，DDA技术作为传统的非靶向LC-MS/MS技术，虽然受限于采集到的二级谱图覆盖范围（一般在30\%-60\%），但受益于其数据分析的便利性，在代谢组学中有着广泛的应用，而DIA技术，虽然理论上可以获取所有母离子的二级谱图（实际覆盖范围在90\%左右），但数据分析较为复杂，数据分析软件仍然有一定的局限性，因而在代谢组学中应用依然较少。
+在此，我们主要借助于R和xcms探讨DDA技术的数据分析原理和代谢物鉴定的方法，并介绍常用软件和代谢物鉴定数据库，以及代谢物差异性分析，如有任何错漏或者疑问，欢迎联系本人（\href{mailto:ydrick@gmail.com}{\nolinkurl{ydrick@gmail.com}}）
+
+\mainmatter
+
+\hypertarget{basis}{%
+\chapter{R语言及环境配置}\label{basis}}
+
+在此，我们主要基于R语言，并利用XCMS等关于代谢组学数据处理R包进行示例说明，以此来
+介绍非靶向代谢组学中LC-MS数据特点和数据处理方法，因而首先介绍环境配置。
+
+\hypertarget{r}{%
+\section{R语言环境安装}\label{r}}
+
+\hypertarget{r}{%
+\subsection{R语言安装}\label{r}}
+
+R语言可于\href{https://cran.r-project.org}{官方网站}下载系统需要的版本，一般选择最新
+稳定版本。
+
+\begin{itemize}
+\tightlist
+\item
+  Windows和MacOS系统请直接下载安装文件。
+\item
+  Linux系统可以使用系统的软件管理程序自动安装或者下载系统对应的二进制文件进行安装
+  （参见\href{https://cran.r-project.org/bin/linux/}{官方介绍}，也可以通过下载源码包，
+  自行编译安装。
+\item
+  Linux通过系统软件管理程序安装代码如下（如果需要安装最新版可能需要安装新的软件
+  源，具体请搜索查找，在此不再列出）：
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# Ubuntu}
+\FunctionTok{sudo}\NormalTok{ apt-get install r-base}
+\CommentTok{# CentOS/Fedora/Redhat}
+\CommentTok{# (for CentOS/Redhat to add EPEL repositories)}
+\FunctionTok{sudo}\NormalTok{ yum install epel-release }
+\FunctionTok{sudo}\NormalTok{ yum install R}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{rstudio}{%
+\subsection{Rstudio安装}\label{rstudio}}
+
+Rstudio是目前市面上最常用的R IDE，利用Rstudio可以方便的进行R包开发和数据分析，
+因而推荐使用Rstudio作为主要IDE，
+Rstudio可以从\href{https://www.rstudio.com/products/rstudio/download/}{官方网站}选择
+系统对应的版本进行下载，且有免费版本使用，一般免费版本已经足够支持基本的开发和
+数据分析了
+
+如果习惯使用VIM、Emacs或者Sublime Text，亦可以找到R相关的插件，以便进行开发和
+调试，在此不再赘述。
+
+\hypertarget{rstudior}{%
+\subsection{Rstudio中设置R包安装源}\label{rstudior}}
+
+用Rstudio进行R包安装时，默认会使用Rstudio源(\url{https://cran.rstudio.com/)进行安装}，
+在部分地区和网络下载速度会比较慢，因而可以选择最近的CRAN源进行安装。
+
+选择Tools - Global Options, 在打开的对话框中找到Packages，点击Change进行选择
+（Figure \ref{fig:Rstudio})
+
+\begin{figure}
+\includegraphics[width=0.7\linewidth]{Figures/Fig2.1} \caption{Change CRAN source in Rstudio}\label{fig:Rstudio}
+\end{figure}
+
+\hypertarget{linuxmacosr}{%
+\subsection{Linux/MacOS中安装R缺失库文件}\label{linuxmacosr}}
+
+R中有许多R包是调用C/C++开发的，以实现复杂步骤的快速运算，提高运行效率，对这类包
+或者部分其他包，在linux或MacOS中进行安装时，会提示无法找到某个lib，这种情况是系
+统中缺乏对应依赖的库文件缺失造成的，因而需要安装对应的库文件，然后再安装该R包即可。
+具体对于每个提示的缺失的lib，可以搜索对应的Error提示信息和系统信息（如Ubuntu）进行
+搜索，即可找到缺失的库文件应该通过安装哪个lib，在此建议使用Google进行搜索，如果
+使用百度，请在搜索时使用``R语言''而非``R''。
+
+\hypertarget{r}{%
+\section{质谱数据分析相关R包安装}\label{r}}
+
+\hypertarget{bioconductor}{%
+\subsection{安装Bioconductor}\label{bioconductor}}
+
+\href{https://www.bioconductor.org}{Bioconductor}提供了R语言的生物信息软件包，主要用于
+生物数据的注释、分析、统计、以及可视化等，最新版本的安装可以参考\href{https://www.bioconductor.org/install/}{官方说明}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\ControlFlowTok{if}\NormalTok{ (}\OperatorTok{!}\KeywordTok{requireNamespace}\NormalTok{(}\StringTok{"BiocManager"}\NormalTok{, }\DataTypeTok{quietly =} \OtherTok{TRUE}\NormalTok{))}
+    \KeywordTok{install.packages}\NormalTok{(}\StringTok{"BiocManager"}\NormalTok{)}
+\NormalTok{BiocManager}\OperatorTok{::}\KeywordTok{install}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+新版本的BiocManager包中install方法可以安装Bioconductor中的R包，亦可以安装CRAN中的
+R包，因而可以统一使用该方法进行R包安装。
+
+如果是旧版本的R，或者安装旧版本的Biocunductor，请按照一下操作
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{source}\NormalTok{(}\StringTok{"https://bioconductor.org/biocLite.R"}\NormalTok{)}
+\KeywordTok{biocLite}\NormalTok{(}\StringTok{"BiocInstaller"}\NormalTok{)}
+\NormalTok{BiocInstaller}\OperatorTok{::}\KeywordTok{biocLite}\NormalTok{()}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{xcmscamera}{%
+\subsection{安装XCMS及CAMERA包}\label{xcmscamera}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(BiocManager)}
+\KeywordTok{install}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{'xcms'}\NormalTok{, }\StringTok{'CAMERA'}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\section{数据准备}
+
+在此，进行质谱数据处理的样例数据，放在GitHub的\href{https://github.com/yddream/MSAnalysis}{yddream/MSAnalysis}
+Repository的data文件夹里，可以克隆本Repository，直接运行Rmd文件，或者单独下载进行分析。
+
+\mainmatter
+
+\hypertarget{chapDDA}{%
+\chapter{DDA-MS技术概要}\label{chapDDA}}
+
+\hypertarget{dda}{%
+\section{DDA技术介绍}\label{dda}}
+
+\hypertarget{chapPD}{%
+\chapter{基于XCMS的峰检测}\label{chapPD}}
+
+\hypertarget{lc-ms}{%
+\section{LC-MS中峰检测简介}\label{lc-ms}}
+
+在LC-MS中，每一个色谱峰（peak）代表一个代谢物，峰检测(peak detection或peak spotting)
+主要目的是检测样品中存在的代谢物，并将多个样品中属于同一个代谢物的色谱峰归类到一起
+（称之为峰分组（peak grouping），分组之后的代表多个样品中同一个代谢物峰组称之为一个
+feature）。
+
+目前，最常用的峰检测算法是centWave，该算法灵敏度高，可以自动对峰宽在指定范围内利用
+小波分析进行判断，从而判定峰的位置和起止点，但该方法在峰的起止点的判定上由于其算法的
+局限性，并不能做到非常准确的判断。
+
+峰分组是在单个样品峰检测的基础上，考虑保留时间（RT）漂移等因素，对属于同一个代谢物
+的峰进行分组，在峰分组之前需要峰对齐（peak alignment），在xcms中最常用的峰对齐方法
+是Obi-Warp，该方法利用采集到的样品数据中的mz，intensity和RT信息进行全局三维对齐，
+对齐之后的RT用于峰分组。一般xcms中常用峰密度分布（group.density）方法进行分组。
+
+在LC-MS的峰检测过程中，但样品的峰检测、跨样品的RT校正（峰对齐）和分组是非常重要且
+必不可少的过程，缺少任何一步，都会对数据处理质量造成影响，而在某些特定条件下，
+Obi-Warp方法会失效，因而在数据处理时要注意看xcms反馈的提示信息，并绘制RT漂移的曲线
+方便检查数据是否进行了正确的RT校正。
+
+\section{原始数据转换}
+
+MS采集的数据，不同的仪器厂商有不同的数据记录方式，而利用XCMS等数据处理软件进行处理
+之前，需要将原始数据转换为通用的软件支持的格式，xcms支持xml、mzData、mzXML、mzML、
+netCDF等数据格式，因而在利用xcms进行数据处理之前，需要对于质谱采集的原始数据进行
+格式转换，一般可使用ProteoWizard等,具体可以参考\href{https://ccms-ucsd.github.io/GNPSDocumentation/fileconversion/}{GNPS的文档介绍}，
+在此不再赘述。目前ProteoWizard数据转换支持情况可参见Figure \ref{fig:datacovert}\citep{dtcoversion}
+
+\begin{figure}
+\centering
+\includegraphics{Figures/Fig4.1.png}
+\caption{\label{fig:datacovert}Converting data to MZML/MZXML using ProteoWizard\citep{Wang:2019ig}}
+\end{figure}
+
+\hypertarget{xcms}{%
+\section{利用XCMS进行峰检测}\label{xcms}}
+
+xcms峰检测有两种方法，一种是在xcms3中新近出现的findChromPeaks方法，该方法有很多
+新的功能和特性，并方便借用xcms内部的绘图方法，但目前其输出数据格式与其他的常用软件
+（如CAMERA）兼容性问题；另一种是传统的xcmsSet方法，由于历史积累和相关软件更新，该
+方法目前使用仍较为广泛。以下分别介绍xcms中峰检测的findChromPeaks和xcmsSet方法
+
+\hypertarget{xcms3}{%
+\subsection{xcms3中峰检测的新方法}\label{xcms3}}
+
+\subsubsection{数据导入}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(xcms)}
+\CommentTok{## Get the full path to the data files(mzxml)}
+\NormalTok{files <-}\StringTok{ }\KeywordTok{list.files}\NormalTok{(}\StringTok{'Data'}\NormalTok{, }\DataTypeTok{pattern =} \StringTok{'(?i)mzxml$'}\NormalTok{,}\DataTypeTok{full.names =} \OtherTok{TRUE}\NormalTok{,}
+        \DataTypeTok{recursive =} \OtherTok{TRUE}\NormalTok{)}
+\CommentTok{## Create a phenodata data.frame}
+\NormalTok{pd <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{sample_name =} \KeywordTok{sub}\NormalTok{(}\KeywordTok{basename}\NormalTok{(files), }\DataTypeTok{pattern =} \StringTok{".mzXML"}\NormalTok{,}
+                   \DataTypeTok{replacement =} \StringTok{""}\NormalTok{, }\DataTypeTok{fixed =} \OtherTok{TRUE}\NormalTok{),}
+         \DataTypeTok{sample_group =} \KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\StringTok{"grp1"}\NormalTok{, }\DecValTok{2}\NormalTok{), }\KeywordTok{rep}\NormalTok{(}\StringTok{"grp2"}\NormalTok{, }\DecValTok{1}\NormalTok{)),}
+         \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{) }
+\NormalTok{rawData <-}\StringTok{ }\KeywordTok{readMSData}\NormalTok{(}\DataTypeTok{files =}\NormalTok{ files, }\DataTypeTok{pdata =} \KeywordTok{new}\NormalTok{(}\StringTok{"NAnnotatedDataFrame"}\NormalTok{, pd),}
+               \DataTypeTok{mode =} \StringTok{"onDisk"}\NormalTok{) }
+\NormalTok{pd}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##   sample_name sample_group
+## 1    DDAdata1         grp1
+## 2    DDAdata2         grp1
+## 3    DDAdata3         grp2
+\end{verbatim}
+
+\begin{itemize}
+\tightlist
+\item
+  注：readMSData是MSnbase包中读取质谱数据的方法，返回结果为一个属于`OnDiskMSnExp'
+  类的对象。
+\end{itemize}
+
+\hypertarget{centwave}{%
+\subsubsection{利用centWave算法进行峰检测}\label{centwave}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# xcms 3 new methods}
+\NormalTok{cwp <-}\StringTok{ }\KeywordTok{CentWaveParam}\NormalTok{(}\DataTypeTok{peakwidth =} \KeywordTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{50}\NormalTok{), }\DataTypeTok{noise =} \DecValTok{1000}\NormalTok{, }\DataTypeTok{snthresh =} \DecValTok{10}\NormalTok{)}
+\NormalTok{xdata <-}\StringTok{ }\KeywordTok{findChromPeaks}\NormalTok{(rawData, }\DataTypeTok{param =}\NormalTok{ cwp) }
+\KeywordTok{head}\NormalTok{(xdata}\OperatorTok{@}\NormalTok{msFeatureData}\OperatorTok{$}\NormalTok{chromPeaks)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##           mz mzmin mzmax    rt rtmin rtmax  into  intb
+## CP0001 702.2 702.2 702.2 45.65 43.14 48.05  8450  8446
+## CP0002 554.2 554.2 554.2 46.84 38.01 49.90 10025 10020
+## CP0003 628.2 628.2 628.2 46.24 43.96 52.94 16639 16634
+## CP0004 629.2 629.2 629.2 46.24 43.14 49.30  8768  8763
+## CP0005 355.1 355.1 355.1 46.84 41.47 53.53  5427  5334
+## CP0006 372.1 372.1 372.1 46.84 41.22 54.15  7815  7351
+##         maxo   sn sample
+## CP0001  5619 5618      1
+## CP0002  6767 2592      1
+## CP0003 10101 1630      1
+## CP0004  5320 1034      1
+## CP0005  3013   80      1
+## CP0006  4097   85      1
+\end{verbatim}
+
+\hypertarget{peak-alignment-grouping}{%
+\subsubsection{峰对齐及分组(peak alignment \& grouping)}\label{peak-alignment-grouping}}
+
+同一代谢物在不同样品的流出时间会略有差异，因而对于峰检测的结果需要进行对齐(alignment)并将不同样品中的统一代谢物分到各自可以表征该代谢物的峰组(peak group)中(代谢组学中一般成为feature)，从而进一步比较不同样品间统一代谢物的含量。通常我们可以使用'obiwarp'算法进行peak alignment，然后利用'density'算法进行peak grouping.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Correspondence: group peaks across samples.}
+\NormalTok{pdp <-}\StringTok{ }\KeywordTok{PeakDensityParam}\NormalTok{(}\DataTypeTok{sampleGroups =}\NormalTok{ xdata}\OperatorTok{$}\NormalTok{sample_group,}
+            \DataTypeTok{minFraction =} \DecValTok{1}\NormalTok{)}
+\NormalTok{xdata <-}\StringTok{ }\KeywordTok{groupChromPeaks}\NormalTok{(xdata, }\DataTypeTok{param =}\NormalTok{ pdp)}
+\CommentTok{## Now the retention time correction.}
+\NormalTok{pgp <-}\StringTok{ }\KeywordTok{PeakGroupsParam}\NormalTok{(}\DataTypeTok{minFraction =} \DecValTok{1}\NormalTok{)}
+\CommentTok{## Get the peak groups that would be used for alignment.}
+\CommentTok{# (grouping with 'peakgroup' method)}
+\NormalTok{xdata <-}\StringTok{ }\KeywordTok{adjustRtime}\NormalTok{(xdata, }\DataTypeTok{param =}\NormalTok{ pgp)}
+\CommentTok{# otherwise, one can also use 'Obi-warp' method for alignment}
+\NormalTok{xdata <-}\StringTok{ }\KeywordTok{adjustRtime}\NormalTok{(xdata, }\DataTypeTok{param =} \KeywordTok{ObiwarpParam}\NormalTok{(}\DataTypeTok{binSize =} \FloatTok{0.6}\NormalTok{))}
+\CommentTok{## Grouping with RT corrected peaks }
+\NormalTok{pdp <-}\StringTok{ }\KeywordTok{PeakDensityParam}\NormalTok{(}\DataTypeTok{sampleGroups =}\NormalTok{ xdata}\OperatorTok{$}\NormalTok{sample_group,}
+                        \DataTypeTok{minFraction =} \FloatTok{0.4}\NormalTok{, }\DataTypeTok{bw =} \DecValTok{20}\NormalTok{)}
+\NormalTok{xdata <-}\StringTok{ }\KeywordTok{groupChromPeaks}\NormalTok{(xdata, }\DataTypeTok{param =}\NormalTok{ pdp)}
+\end{Highlighting}
+\end{Shaded}
+
+\#\#\#\#峰补齐(filling gaps)
+对于峰检测过程中会有部分feature在某些样品中未检出对应代谢物峰的清醒，xcms可以根据已检出feature的信息，在相应样品中强行提取EIC信息，从而计算该代谢物在该样品中的含量信息，我们一般称之为filling gaps
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{xdata <-}\StringTok{ }\KeywordTok{fillChromPeaks}\NormalTok{(xdata)}
+\end{Highlighting}
+\end{Shaded}
+
+\hypertarget{xcms}{%
+\subsection{xcms中传统的峰检测方法}\label{xcms}}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(xcms)}
+\CommentTok{## Get the full path to the data files(mzxml)}
+\NormalTok{files <-}\StringTok{ }\KeywordTok{list.files}\NormalTok{(}\StringTok{'Data'}\NormalTok{, }\DataTypeTok{pattern =} \StringTok{'(?i)mzxml$'}\NormalTok{,}\DataTypeTok{full.names =} \OtherTok{TRUE}\NormalTok{,}
+        \DataTypeTok{recursive =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{xdata <-}\StringTok{ }\KeywordTok{xcmsSet}\NormalTok{(files, }\DataTypeTok{method =} \StringTok{'centWave'}\NormalTok{, }\DataTypeTok{peakwidth =} \KeywordTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{50}\NormalTok{), }\DataTypeTok{noise=} \DecValTok{1000}\NormalTok{, }\DataTypeTok{snthr =} \DecValTok{10}\NormalTok{)}
+\CommentTok{# peak alignment & groups}
+\CommentTok{# peakgroups method}
+\NormalTok{xdata <-}\StringTok{ }\NormalTok{xcms}\OperatorTok{::}\KeywordTok{group}\NormalTok{(xdata, }\DataTypeTok{minfrac =} \DecValTok{1}\NormalTok{)}
+\NormalTok{xdata<-}\StringTok{ }\KeywordTok{retcor}\NormalTok{(xdata, }\DataTypeTok{method =} \StringTok{'peakgroups'}\NormalTok{, }\DataTypeTok{plottype =} \StringTok{'deviation'}\NormalTok{)}
+\CommentTok{# or obiwarp method}
+\NormalTok{xdata<-}\StringTok{ }\KeywordTok{retcor}\NormalTok{(xdata, }\DataTypeTok{method =} \StringTok{'obiwarp'}\NormalTok{, }\DataTypeTok{plottype =} \StringTok{'deviation'}\NormalTok{, }\DataTypeTok{profStep =} \FloatTok{0.6}\NormalTok{)}
+\NormalTok{xdata<-}\StringTok{ }\NormalTok{xcms}\OperatorTok{::}\KeywordTok{group}\NormalTok{(xdata, }\DataTypeTok{bw =} \DecValTok{20}\NormalTok{, }\DataTypeTok{minfrac =} \DecValTok{1}\NormalTok{)}
+\CommentTok{# fill gaps}
+\NormalTok{xdata <-}\KeywordTok{fillPeaks}\NormalTok{(xdata)}
+\end{Highlighting}
+\end{Shaded}
+
+\#\#\#补充说明
+findChromPeaks是xcms中用于进行峰检测的新方法，输入值为'OnDiskMSnExp'对象和峰检测参数对象，CentWaveParam用以创建'CentWaveParam'对象，该对象设置使用'centWave'算法进行峰检测时所需要的参数，其中比较常用的参数如下：
+- ppm -- 峰检测时MS1的m/z tolerance，以ppm为单位
+- peakwidth -- 长度为2的向量，设置峰检测时峰宽范围，事实上该参数对应的每个峰可以跨越多少个质谱检测的scan，而非多少秒
+- snthresh -- 峰检测时信噪比要求
+- return.type -- 返回数据类型，可以根据要求返回'XCMSnExp'类数据（默认）、传统的'xcmsSet'类以及'list'
+
+xcmsSet是xcms中可以用于峰检测的传统方法，使用method参数设置峰检测算法，另外根据不同的峰检测算法可以设置该算法需要的参数，详情请参考xcms官方文档。其中'centWave'算法所对应的参数与'CentWaveParam'设置基本一致。
+
+峰检测时除了可以使用centWave算法外，还可以使用其他算法，如'centWaveWithPredIsoROIs'、`massifquant'、`matchedFilter'、`MSW'等，分别对应'CentWavePredIsoParam'、`MassifquantParam'、`MatchedFilterParam'、'MSWParam'参数设置，详情请参考xcms官方文档或者使用R help
+
+\hypertarget{camera}{%
+\section{利用CAMERA进行峰注释}\label{camera}}
+
+借助LC-MS技术检测得到的代谢物峰包含了大量的同位素峰和加合物峰信息，对数据的进一步造成一定干扰，因而做好同位素和加合物峰的注释对代谢组学数据分析具有重要的辅助作用。常见的注释工具有CAMERA和RAMCluster等，在这里主要介绍基于CAMERA的代谢物峰注释基本操作和其中的一些注意事项。
+
+\hypertarget{camera}{%
+\subsection{CAMERA包介绍}\label{camera}}
+
+CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注释，从而标记峰与峰之间的同位素和加合物关系，
+具体原理请参考Carsten Kuhl等人2012年发表于分析化学(Analytical Chemistory)上的文章\citep{Kuhl:2011fy}。
+该R包具体相关信息可以参考\href{https://bioconductor.org/packages/release/bioc/html/CAMERA.html}{Bioconductor网站}，关于利用CAMERA进行注释的详细方法和例子可以参考\href{https://bioconductor.org/packages/release/bioc/vignettes/CAMERA/inst/doc/CAMERA.pdf}{最新文档}，
+
+\subsubsection{注释前的预备工作}
+
+峰检测完成后则可以开始CAMERA注释的操作了。在正式注释同位素和加合物峰之前，需要对峰检测数据进行进一步的处理，创建CAMERA注释对象，并进行分组并检验分组结果
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{require}\NormalTok{(CAMERA)}
+\CommentTok{#Create an xsAnnotate object}
+\NormalTok{xa <-}\StringTok{ }\KeywordTok{xsAnnotate}\NormalTok{(xdata)}
+\CommentTok{#Group after RT value of the xcms grouped peak}
+\NormalTok{xag <-}\StringTok{ }\KeywordTok{groupFWHM}\NormalTok{(xa, }\DataTypeTok{perfwhm=}\FloatTok{0.6}\NormalTok{)}
+\CommentTok{#Verify grouping}
+\NormalTok{xac <-}\StringTok{ }\KeywordTok{groupCorr}\NormalTok{(xag)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{同位素峰注释}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Annotate isotopes, could be done before groupCorr}
+\NormalTok{xac.isotope <-}\StringTok{ }\KeywordTok{findIsotopes}\NormalTok{(xac)}
+\end{Highlighting}
+\end{Shaded}
+
+\subsubsection{加合物峰注释}
+
+在同位素峰注释完成之后，才可以进行加合物峰的注释。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Annotate adducts}
+\NormalTok{xac.addu <-}\StringTok{ }\KeywordTok{findAdducts}\NormalTok{(xac.isotope, }\DataTypeTok{polarity=}\StringTok{"positive"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+在这里需要注意的是，加合物的注释可以自己给定加合物注释的规则(rules)。事实上，CAMERA本身内置了非常多的加合物形式的规则，但对于不同的LC体系，产生的加合物形式会有所不同，因而，对于特定的实验来说，最好根据大家对实验中采用的LC体系的了解，自己制定针对性的注释规则。对于CAMERA中的加合物注释规则，大家可以使用以下代码提取，在自己制定规则的时候，可以用做参考。
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{# list all rule files (for positive/negative modes, primary/extende rules)}
+\NormalTok{files <-}\StringTok{ }\KeywordTok{list.files}\NormalTok{(}\KeywordTok{system.file}\NormalTok{(}\StringTok{'rules'}\NormalTok{, }\DataTypeTok{package =} \StringTok{"CAMERA"}\NormalTok{), }\DataTypeTok{full.names =} \OtherTok{TRUE}\NormalTok{)}
+\CommentTok{# show head lines of sample rule}
+\KeywordTok{head}\NormalTok{(}\KeywordTok{read.csv}\NormalTok{(files[}\DecValTok{4}\NormalTok{]))}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##       name nmol charge massdiff oidscore quasi ips
+## 1   [M+H]+    1      1    1.007        1     1   1
+## 2  [M+Na]+    1      1   22.989        8     1   1
+## 3   [M+K]+    1      1   38.963       10     1   1
+## 4 [M+NH4]+    1      1   18.034       16     1   1
+\end{verbatim}
+
+对于以上每一列表示的具体含义，可以参考使用文档`Create rule table'章节（Bioconductor v3.9 在14页，\href{https://bioconductor.org/packages/release/bioc/vignettes/CAMERA/inst/doc/CAMERA.pdf}{Section 6}）
+
+如果需要使用自定义的规则，请参考以下代码：
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{my.rules <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(files[}\DecValTok{4}\NormalTok{])}
+\NormalTok{xac.addu <-}\StringTok{ }\KeywordTok{findAdducts}\NormalTok{(xac.isotope, }\DataTypeTok{rules =}\NormalTok{ my.rules, }\DataTypeTok{polarity=}\StringTok{"positive"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+注：polarity请根据自己实验采集数据时的离子模式正确设置，在不设置自定义规则的时候，CAMERA会调用内置的与该离子模式相同的规则（包含primary和extended）进行注释。
+
+\subsubsection{注释结果表格输出}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{#Get final peaktable and store on harddrive}
+\NormalTok{res.anno <-}\StringTok{ }\KeywordTok{getPeaklist}\NormalTok{(xac.addu)}
+\KeywordTok{write.csv}\NormalTok{(res.anno,}\DataTypeTok{file=}\StringTok{"Result.csv"}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(res.anno)}
+\end{Highlighting}
+\end{Shaded}
+
+对于adduct列，我们看到的最后部分的数字表示该加合物形式对应的M的质荷比，方括号内显示的是M的加合物形式，方括号后面的`+'号则表示该加合物形式的电荷数量。而同位素注释结果中最前面的方括号表示该同位素所对应的id，id相同的峰为同一个M峰的不同同位素峰，第二个方括号中的M+x表示同位素峰中的同位素情况，方括号外面的内容则表示电荷情况。pcgroup列则是在预处理时CAMERA生成的group信息
+
+\subsection{小结}
+
+峰检测是质谱数据处理的基础，利用峰检测可以获取样品中检测到的信号的基本信息，如mz、RT、峰面积等，这些信息是代谢物鉴定和差异分析的基础，利用xcms进行峰检测，并借助于CAMERA进行峰注释，可以有效的检测到样品中含有的代谢物信息，并去除部分冗余。除了xcms，还有很多同样优秀的质谱数据处理分析的软件，如OpenMS，MZ Mine2，MS-DIAL等，在此暂不做详细介绍，如有兴趣请参考相应软件的官方说明。
+
+\hypertarget{chapMSMS}{%
+\chapter{二级谱图提取}\label{chapMSMS}}
+
+\hypertarget{dda}{%
+\section{DDA数据里的二级谱图}\label{dda}}
+
+\hypertarget{proteowizard}{%
+\section{利用ProteoWizard进行二级谱图提取}\label{proteowizard}}
+
+\subsection{普图提取}
+
+\subsection{与峰检测结果进行结合}
+
+\hypertarget{xcms}{%
+\section{利用XCMS进行二级谱图提取}\label{xcms}}
+
+\hypertarget{-1}{%
+\section{小结}\label{-1}}
+
+\hypertarget{chapID}{%
+\chapter{代谢物鉴定}\label{chapID}}
+
+\section{代谢物鉴定方法介绍}
+
+\section{常用鉴定工具}
+
+\hypertarget{chapSTAT}{%
+\chapter{基本差异分析}\label{chapSTAT}}
+
+\section{代谢物差异分析简介}
+
+\hypertarget{fold-change}{%
+\section{Fold change}\label{fold-change}}
+
+\section{基本统计检验}
+
+\hypertarget{students-t-test}{%
+\subsection{Students' t-Test}\label{students-t-test}}
+
+\hypertarget{wilcoxon-test}{%
+\subsection{Wilcoxon Test}\label{wilcoxon-test}}
+
+\hypertarget{-2}{%
+\subsection{小结}\label{-2}}
+
+\hypertarget{chapPCA}{%
+\chapter{主成分分析（PCA）}\label{chapPCA}}
+
+\hypertarget{pca}{%
+\section{PCA原理及简介}\label{pca}}
+
+\hypertarget{rpca}{%
+\section{利用R进行PCA分析}\label{rpca}}
+
+\section{结果解读}
+
+\hypertarget{chapPLS}{%
+\chapter{PLS-DA和OPLS-DA}\label{chapPLS}}
+
+\hypertarget{pls-da}{%
+\section{PLS-DA}\label{pls-da}}
+
+\hypertarget{opls-da}{%
+\section{OPLS-DA}\label{opls-da}}
+
+\cleardoublepage
+
+\hypertarget{appendix-}{%
+\appendix \addcontentsline{toc}{chapter}{\appendixname}}
+
+
+\hypertarget{sound}{%
+\chapter{余音绕梁}\label{sound}}
+
+呐，到这里朕的书差不多写完了，但还有几句话要交待，所以开个附录，再啰嗦几句，各位客官稍安勿躁、扶稳坐好。
+
+\bibliography{book.bib,packages.bib}
+
+\backmatter
+\printindex
+
+\end{document}
