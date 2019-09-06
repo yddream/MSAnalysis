@@ -78,7 +78,18 @@ library(BiocManager)
 install(c('xcms', 'CAMERA'))
 ```
 
+### 安装需要用到的辅助包
+```{r otherpkg, eval=FALSE, include=TRUE}
+library(BiocManager)
+install(c("RColorBrewer", "faahKO", "MSnbase"))
+```
+
+## 代谢物鉴定软件
+[MS-DIAL](http://prime.psc.riken.jp/Metabolomics_Software/MS-DIAL/)是Windows下免费的数据处理和代谢物鉴定软件，该软件使用C#编写，因而只支持Windows用户使用。该软件新版本自带MoNA谱图数据库，同时支持自定义谱图库导入，因而对常规质谱数据处理和代谢物鉴定有很大的帮助。
+
+## 数据转换软件
+目前仪器采集的原始数据，在利用很多厂商提供的软件之外的数据处理软件进行数据处理前需要将之转换为通用数据格式，如mz(X)ML/ABF/netCDF等。xcms和MZmine 2 等支持mz(X)ML，MS-DIAL需要转为ABF。一般，我们可以使用[ProteoWizard](http://proteowizard.sourceforge.net)套件中的msConvert进行数据转换，将数据转换为文本格式，如mzXML，MGF等，如果使用MS-DIAL进行数据处理，则需要使用[Reifycs Abf Converter](https://www.reifycs.com/AbfConverter/)将数据转为Abf(Analysis Base File)格式
+
 ## 数据准备
-在此，进行质谱数据处理的样例数据，放在GitHub的[yddream/MSAnalysis](https://github.com/yddream/MSAnalysis)
-Repository的data文件夹里，可以克隆本Repository，直接运行Rmd文件，或者单独下载进行分析。
+在此，进行质谱数据处理的样例数据，放在GitHub的[yddream/MSAnalysis](https://github.com/yddream/MSAnalysis)Repository的data文件夹里，可以克隆本Repository，直接运行Rmd文件，或者单独下载进行分析。
 

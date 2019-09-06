@@ -1,13 +1,84 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
 # 二级谱图提取{#chapMSMS}
 
 ## DDA数据里的二级谱图
+DDA采集模式在采集二级(MSMS or MS2)谱图时，会按照母离子丰度从高代低依次采集，然后记录采集谱图时目标的母离子的m/z信息和采集时间，但无法记录采集时该MS1离子的强度(intensity)，因而，可以根据记录的母离子m/z和采集时间，与对峰检测中获取的峰进行对应，从而获取代表采集到的代谢物的二级谱图信息，进而通过谱图比对的方式进行代谢物鉴定，同时利用峰检测结果进行定量。甚至可以只用二级谱图的信息，直接通过谱图比对，进行代谢物鉴定。
+
+要获取二级谱图信息，最简单的方法是利用ProteoWizard中的msConvert直接进行数据转换，只提取MS2信息生成MGF格式数据，再读取MGF文本信息，从而在程序里获得MS2数据，进行后续处理；另一种方法是直接在xcms中直接读取转换好的mzXML文件，并从中得到二级谱图信息，或者根据一级峰检测结果，从二级质谱数据中提取与之对应的谱图数据。
 
 ## 利用ProteoWizard进行二级谱图提取
+MSConvert转换数据到MGF时，设置如Figure \@ref(fig:ConvertMGF)所示。转换完之后，即可得到对应的MGF文件(Figure \@ref(fig:MGFExample))
+```{r ConvertMGF, echo = FALSE, out.width="40%", fig.cap = 'Converting mzXML to MGF with msConvert', fig.subcap = c("Convert setup", "MGF data record")}
+knitr::include_graphics(c("Figures/Fig_CovertMGF.PNG"))
+```
+```{r MGFExample, echo = FALSE, out.width="40%", fig.cap = 'Example of MGF data record'}
+knitr::include_graphics(c("Figures/Fig_MGFExample.PNG"))
+```
+### 谱图提取
 
-### 普图提取
+- 利用R读取MGF文件，并获取MS2谱图信息。
+```{r readMGF, eval=TRUE, message=FALSE, warning=FALSE, dependson=c(), include=TRUE, catch = TRUE, fig.cap="Example of extracted MS2 spectrum"}
+source("Code/ReadMGF.R")
+files <- list.files(path = "Data", pattern = "(?i).MGF$",
+                    recursive = TRUE, full.names = TRUE)
+mgf.data <- ReadMGF(files[1])
+spec.info <- plyr::ldply(mgf.data, `[[`, "info")
+head(spec.info)
+spec.all <- lapply(mgf.data, `[[`, "spec")
+plot(spec.all[[2682]], type = "h", col = "red")
+abline(h=0)
+```
 
+- 对谱图信息进行去噪音处理
+仪器记录的原始MS2谱图信息含有很多噪音(white noise)，不同的仪器有不同的噪音水平，可以根据记录的强度信息大致做出评判，一般在我们使用的这组数据中，采用30作为噪音的基准值(Figure \@ref(fig:mgfSpecInt))，对于低于该水平的二级碎片，要清除掉。另外，在记录的MS2谱图里面，也会包含有高于母离子m/z的碎片出现，这些碎片也要清除掉(Figure \@ref(fig:mgfNoise))。
+```{r mgfSpecInt, eval=TRUE, message=FALSE, warning=FALSE, dependson=c('readMGF'), include=TRUE, catch = TRUE, fig.cap="Density of MS2 spectra intensities"}
+frag.all <- do.call(rbind, spec.all)
+plot(density(frag.all[frag.all[, 2] <= 200, 2]),
+     main = "Density of intensities (<=200)")
+```
+
+```{r mgfNoise, eval=TRUE, message=FALSE, warning=FALSE, dependson=c('readMGF'), include=TRUE, catch = TRUE, fig.cap="Example of extracted MS2 spectrum"}
+spec.denoise <- lapply(seq_along(spec.all), function(idx) {
+  spec <- spec.all[[idx]]
+  spec <- spec[spec[, 2] >= 30, , drop = FALSE]
+  mz.precursor <- spec.info[idx, "mz"]
+  spec <- spec[spec[, 1] <= mz.precursor, , drop = FALSE]
+})
+plot(spec.all[[2682]], type = "h", col = "gray50")
+lines(spec.denoise[[2682]], type = "h", col = "red")
+abline(h=0)
+abline(h=30, lty = 3)
+abline(v=spec.info[2682, "mz"], lty = 3, col = "green4")
+```
 ### 与峰检测结果进行结合
+根据提取出来的MS2谱图的m/z和rt信息，与之前得到的峰检测结果进行匹配，将匹配上的，保留为与检测到的峰对应的MS2谱图。对同一个代谢物，有可能打到多张MS2谱图，此时，要选择其中某一张谱图最为标准或者用合适的方法合并这两张谱图，从而得到在样品中采集到的二级谱图信息
+```{r mgfMS2Assign, eval=TRUE, message=FALSE, warning=FALSE, dependson=c("readMGF", "mgfNoise"), include=TRUE, catch = TRUE, fig.cap="Example of matched spectrum to MS1 peak"}
+pk.info <- readRDS("Data/AnnoRes.Rda")
+mz.pk <- pk.info[, "mz"]
+mz.spec <- spec.info[, "mz"]
+rt.spec <- spec.info[, "rt"]
+idx.spec <- apply(pk.info, 1, function(dr) {
+  mz <- as.numeric(dr["mz"])
+  rt <- as.numeric(dr["rt"])
+  idx <- which(mz.spec >= mz - 0.01 & mz.spec <= mz + 0.01 &
+                 rt.spec >= rt - 5 & rt.spec <= rt + 5)
+})
 
+require(xcms)
+xset <- readRDS("Data/xset.Rda")
+eic <- getEIC(xset, groupidx = 7, rtrange = 50,
+                    sampleidx=sampnames(xset)[1], rt = "raw")
+par(mfrow=c(1,2))
+plot(eic@eic$DDAdata1[[1]], type = "b", col = "red")
+# points(eic@eic$DDAdata1[[1]], col = "gray")
+abline(v=rt.spec[idx.spec[[7]]], col = "green4", lty = 2)
+plot(spec.denoise[[idx.spec[[7]][2]]], type = "h", col = "red", ylim = c(0, 200))
+abline(h=0)
+```
 ## 利用XCMS进行二级谱图提取
 
 ## 小结

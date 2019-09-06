@@ -172,7 +172,7 @@
 
 \title{基于非靶向代谢组学的化学成分差异性分析}
 \author{Yandong Yin}
-\date{2019-09-02}
+\date{2019-09-06}
 
 \begin{document}
 \maketitle
@@ -329,10 +329,26 @@ R包，因而可以统一使用该方法进行R包安装。
 \end{Highlighting}
 \end{Shaded}
 
+\subsection{安装需要用到的辅助包}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(BiocManager)}
+\KeywordTok{install}\NormalTok{(}\KeywordTok{c}\NormalTok{(}\StringTok{"RColorBrewer"}\NormalTok{, }\StringTok{"faahKO"}\NormalTok{, }\StringTok{"MSnbase"}\NormalTok{))}
+\end{Highlighting}
+\end{Shaded}
+
+\section{代谢物鉴定软件}
+
+\href{http://prime.psc.riken.jp/Metabolomics_Software/MS-DIAL/}{MS-DIAL}是Windows下免费的数据处理和代谢物鉴定软件，该软件使用C\#编写，因而只支持Windows用户使用。该软件新版本自带MoNA谱图数据库，同时支持自定义谱图库导入，因而对常规质谱数据处理和代谢物鉴定有很大的帮助。
+
+\section{数据转换软件}
+
+目前仪器采集的原始数据，在利用很多厂商提供的软件之外的数据处理软件进行数据处理前需要将之转换为通用数据格式，如mz(X)ML/ABF/netCDF等。xcms和MZmine 2 等支持mz(X)ML，MS-DIAL需要转为ABF。一般，我们可以使用\href{http://proteowizard.sourceforge.net}{ProteoWizard}套件中的msConvert进行数据转换，将数据转换为文本格式，如mzXML，MGF等，如果使用MS-DIAL进行数据处理，则需要使用\href{https://www.reifycs.com/AbfConverter/}{Reifycs Abf Converter}将数据转为Abf(Analysis Base File)格式
+
 \section{数据准备}
 
-在此，进行质谱数据处理的样例数据，放在GitHub的\href{https://github.com/yddream/MSAnalysis}{yddream/MSAnalysis}
-Repository的data文件夹里，可以克隆本Repository，直接运行Rmd文件，或者单独下载进行分析。
+在此，进行质谱数据处理的样例数据，放在GitHub的\href{https://github.com/yddream/MSAnalysis}{yddream/MSAnalysis}Repository的data文件夹里，可以克隆本Repository，直接运行Rmd文件，或者单独下载进行分析。
 
 \mainmatter
 
@@ -392,20 +408,26 @@ xcms峰检测有两种方法，一种是在xcms3中新近出现的findChromPeaks
 \hypertarget{xcms3}{%
 \subsection{xcms3中峰检测的新方法}\label{xcms3}}
 
+xcms3的官方文档中有非常详细的数据处理方法的介绍，其中\href{https://bioconductor.org/packages/release/bioc/vignettes/xcms/inst/doc/xcms.html\#6_correspondence}{\emph{LCMS data preprocessing and analysis with xcms}}中介绍了如何利用xcms3的新方法进行一级质谱数据处理。
+
 \subsubsection{数据导入}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{require}\NormalTok{(xcms)}
+\KeywordTok{require}\NormalTok{(RColorBrewer)}
 \CommentTok{## Get the full path to the data files(mzxml)}
-\NormalTok{files <-}\StringTok{ }\KeywordTok{list.files}\NormalTok{(}\StringTok{'Data'}\NormalTok{, }\DataTypeTok{pattern =} \StringTok{'(?i)mzxml$'}\NormalTok{,}\DataTypeTok{full.names =} \OtherTok{TRUE}\NormalTok{,}
-        \DataTypeTok{recursive =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{files <-}\StringTok{ }\KeywordTok{list.files}\NormalTok{(}\StringTok{'Data'}\NormalTok{, }\DataTypeTok{pattern =} \StringTok{'(?i)mzxml$'}\NormalTok{,}
+                    \DataTypeTok{full.names =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{recursive =} \OtherTok{TRUE}\NormalTok{)}
 \CommentTok{## Create a phenodata data.frame}
-\NormalTok{pd <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{sample_name =} \KeywordTok{sub}\NormalTok{(}\KeywordTok{basename}\NormalTok{(files), }\DataTypeTok{pattern =} \StringTok{".mzXML"}\NormalTok{,}
-                   \DataTypeTok{replacement =} \StringTok{""}\NormalTok{, }\DataTypeTok{fixed =} \OtherTok{TRUE}\NormalTok{),}
+\NormalTok{pd <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}\DataTypeTok{sample_name =} \KeywordTok{sub}\NormalTok{(}\KeywordTok{basename}\NormalTok{(files),}
+                                   \DataTypeTok{pattern =} \StringTok{".mzXML"}\NormalTok{, }
+                                   \DataTypeTok{replacement =} \StringTok{""}\NormalTok{,}
+                                   \DataTypeTok{fixed =} \OtherTok{TRUE}\NormalTok{),}
          \DataTypeTok{sample_group =} \KeywordTok{c}\NormalTok{(}\KeywordTok{rep}\NormalTok{(}\StringTok{"grp1"}\NormalTok{, }\DecValTok{2}\NormalTok{), }\KeywordTok{rep}\NormalTok{(}\StringTok{"grp2"}\NormalTok{, }\DecValTok{1}\NormalTok{)),}
          \DataTypeTok{stringsAsFactors =} \OtherTok{FALSE}\NormalTok{) }
-\NormalTok{rawData <-}\StringTok{ }\KeywordTok{readMSData}\NormalTok{(}\DataTypeTok{files =}\NormalTok{ files, }\DataTypeTok{pdata =} \KeywordTok{new}\NormalTok{(}\StringTok{"NAnnotatedDataFrame"}\NormalTok{, pd),}
+\NormalTok{rawData <-}\StringTok{ }\KeywordTok{readMSData}\NormalTok{(}\DataTypeTok{files =}\NormalTok{ files, }
+                      \DataTypeTok{pdata =} \KeywordTok{new}\NormalTok{(}\StringTok{"NAnnotatedDataFrame"}\NormalTok{, pd),}
                \DataTypeTok{mode =} \StringTok{"onDisk"}\NormalTok{) }
 \NormalTok{pd}
 \end{Highlighting}
@@ -431,7 +453,8 @@ xcms峰检测有两种方法，一种是在xcms3中新近出现的findChromPeaks
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{# xcms 3 new methods}
-\NormalTok{cwp <-}\StringTok{ }\KeywordTok{CentWaveParam}\NormalTok{(}\DataTypeTok{peakwidth =} \KeywordTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{50}\NormalTok{), }\DataTypeTok{noise =} \DecValTok{1000}\NormalTok{, }\DataTypeTok{snthresh =} \DecValTok{10}\NormalTok{)}
+\NormalTok{cwp <-}\StringTok{ }\KeywordTok{CentWaveParam}\NormalTok{(}\DataTypeTok{peakwidth =} \KeywordTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{50}\NormalTok{),}
+                     \DataTypeTok{noise =} \DecValTok{1000}\NormalTok{, }\DataTypeTok{snthresh =} \DecValTok{10}\NormalTok{)}
 \NormalTok{xdata <-}\StringTok{ }\KeywordTok{findChromPeaks}\NormalTok{(rawData, }\DataTypeTok{param =}\NormalTok{ cwp) }
 \KeywordTok{head}\NormalTok{(xdata}\OperatorTok{@}\NormalTok{msFeatureData}\OperatorTok{$}\NormalTok{chromPeaks)}
 \end{Highlighting}
@@ -440,19 +463,48 @@ xcms峰检测有两种方法，一种是在xcms3中新近出现的findChromPeaks
 \begin{verbatim}
 ##           mz mzmin mzmax    rt rtmin rtmax  into  intb
 ## CP0001 702.2 702.2 702.2 45.65 43.14 48.05  8450  8446
-## CP0002 554.2 554.2 554.2 46.84 38.01 49.90 10025 10020
-## CP0003 628.2 628.2 628.2 46.24 43.96 52.94 16639 16634
-## CP0004 629.2 629.2 629.2 46.24 43.14 49.30  8768  8763
-## CP0005 355.1 355.1 355.1 46.84 41.47 53.53  5427  5334
-## CP0006 372.1 372.1 372.1 46.84 41.22 54.15  7815  7351
 ##         maxo   sn sample
 ## CP0001  5619 5618      1
-## CP0002  6767 2592      1
-## CP0003 10101 1630      1
-## CP0004  5320 1034      1
-## CP0005  3013   80      1
-## CP0006  4097   85      1
+##  [ reached getOption("max.print") -- omitted 5 rows ]
 \end{verbatim}
+
+下图展示检测到的一个峰的示例（Figure @ref(fig:pd\_showPeaks)）和在样品中的EIC信息（Figure @ref(fig:pd\_showEIC)）
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{## Define the rt and m/z range of the peak area}
+\NormalTok{rtr <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\DecValTok{375}\NormalTok{, }\DecValTok{400}\NormalTok{)}
+\NormalTok{mzr <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\FloatTok{132.07604}\NormalTok{, }\FloatTok{132.07639}\NormalTok{)}
+\CommentTok{## extract the chromatogram}
+\NormalTok{chrRaw <-}\StringTok{ }\KeywordTok{chromatogram}\NormalTok{(xdata, }\DataTypeTok{mz =}\NormalTok{ mzr, }\DataTypeTok{rt =}\NormalTok{ rtr)}
+\NormalTok{cls <-}\StringTok{ }\KeywordTok{paste0}\NormalTok{(}\KeywordTok{brewer.pal}\NormalTok{(}\DecValTok{3}\NormalTok{, }\StringTok{"Set1"}\NormalTok{)[}\DecValTok{1}\OperatorTok{:}\DecValTok{2}\NormalTok{], }\StringTok{"60"}\NormalTok{)}
+\KeywordTok{names}\NormalTok{(cls) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"grp1"}\NormalTok{, }\StringTok{"grp2"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(chrRaw, }\DataTypeTok{col =}\NormalTok{ cls[chrRaw}\OperatorTok{$}\NormalTok{sample_group], }\DataTypeTok{peakBg =}\NormalTok{ cls[chrRaw}\OperatorTok{$}\NormalTok{sample_group])}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{MSAnalisis_files/figure-latex/pdshowPeaks-1.pdf}
+\caption{\label{fig:pdshowPeaks}Extracted ion chromatogram for one peak}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{library}\NormalTok{(magrittr)}
+\CommentTok{# plot EIC/XIC}
+\NormalTok{xdata }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filterRt}\NormalTok{(}\DataTypeTok{rt =}\NormalTok{ rtr) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{filterMz}\NormalTok{(}\DataTypeTok{mz =}\NormalTok{ mzr) }\OperatorTok{%>%}
+\StringTok{    }\KeywordTok{plot}\NormalTok{(}\DataTypeTok{type =} \StringTok{"XIC"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{MSAnalisis_files/figure-latex/pdshowEIC-1.pdf}
+\caption{\label{fig:pdshowEIC}Visualization of the raw MS data for one peak}
+\end{figure}
 
 \hypertarget{peak-alignment-grouping}{%
 \subsubsection{峰对齐及分组(peak alignment \& grouping)}\label{peak-alignment-grouping}}
@@ -471,7 +523,7 @@ xcms峰检测有两种方法，一种是在xcms3中新近出现的findChromPeaks
 \CommentTok{# (grouping with 'peakgroup' method)}
 \NormalTok{xdata <-}\StringTok{ }\KeywordTok{adjustRtime}\NormalTok{(xdata, }\DataTypeTok{param =}\NormalTok{ pgp)}
 \CommentTok{# otherwise, one can also use 'Obi-warp' method for alignment}
-\NormalTok{xdata <-}\StringTok{ }\KeywordTok{adjustRtime}\NormalTok{(xdata, }\DataTypeTok{param =} \KeywordTok{ObiwarpParam}\NormalTok{(}\DataTypeTok{binSize =} \FloatTok{0.6}\NormalTok{))}
+\NormalTok{xdata <-}\StringTok{ }\KeywordTok{adjustRtime}\NormalTok{(xdata, }\DataTypeTok{param =} \KeywordTok{ObiwarpParam}\NormalTok{(}\DataTypeTok{binSize =} \FloatTok{0.1}\NormalTok{))}
 \CommentTok{## Grouping with RT corrected peaks }
 \NormalTok{pdp <-}\StringTok{ }\KeywordTok{PeakDensityParam}\NormalTok{(}\DataTypeTok{sampleGroups =}\NormalTok{ xdata}\OperatorTok{$}\NormalTok{sample_group,}
                         \DataTypeTok{minFraction =} \FloatTok{0.4}\NormalTok{, }\DataTypeTok{bw =} \DecValTok{20}\NormalTok{)}
@@ -495,18 +547,37 @@ xcms峰检测有两种方法，一种是在xcms3中新近出现的findChromPeaks
 \begin{Highlighting}[]
 \KeywordTok{require}\NormalTok{(xcms)}
 \CommentTok{## Get the full path to the data files(mzxml)}
-\NormalTok{files <-}\StringTok{ }\KeywordTok{list.files}\NormalTok{(}\StringTok{'Data'}\NormalTok{, }\DataTypeTok{pattern =} \StringTok{'(?i)mzxml$'}\NormalTok{,}\DataTypeTok{full.names =} \OtherTok{TRUE}\NormalTok{,}
-        \DataTypeTok{recursive =} \OtherTok{TRUE}\NormalTok{)}
-\NormalTok{xdata <-}\StringTok{ }\KeywordTok{xcmsSet}\NormalTok{(files, }\DataTypeTok{method =} \StringTok{'centWave'}\NormalTok{, }\DataTypeTok{peakwidth =} \KeywordTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{50}\NormalTok{), }\DataTypeTok{noise=} \DecValTok{1000}\NormalTok{, }\DataTypeTok{snthr =} \DecValTok{10}\NormalTok{)}
+\NormalTok{files <-}\StringTok{ }\KeywordTok{list.files}\NormalTok{(}\StringTok{'Data'}\NormalTok{, }\DataTypeTok{pattern =} \StringTok{'(?i)mzxml$'}\NormalTok{,}
+                    \DataTypeTok{full.names =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{recursive =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{xdata <-}\StringTok{ }\KeywordTok{xcmsSet}\NormalTok{(files, }\DataTypeTok{method =} \StringTok{'centWave'}\NormalTok{,}
+                 \DataTypeTok{peakwidth =} \KeywordTok{c}\NormalTok{(}\DecValTok{5}\NormalTok{, }\DecValTok{50}\NormalTok{), }\DataTypeTok{noise=} \DecValTok{1000}\NormalTok{, }\DataTypeTok{snthr =} \DecValTok{10}\NormalTok{)}
 \CommentTok{# peak alignment & groups}
 \CommentTok{# peakgroups method}
-\NormalTok{xdata <-}\StringTok{ }\NormalTok{xcms}\OperatorTok{::}\KeywordTok{group}\NormalTok{(xdata, }\DataTypeTok{minfrac =} \DecValTok{1}\NormalTok{)}
-\NormalTok{xdata<-}\StringTok{ }\KeywordTok{retcor}\NormalTok{(xdata, }\DataTypeTok{method =} \StringTok{'peakgroups'}\NormalTok{, }\DataTypeTok{plottype =} \StringTok{'deviation'}\NormalTok{)}
+\CommentTok{# xdata <- xcms::group(xdata, minfrac = 1)}
+\CommentTok{# xdata<- retcor(xdata, method = 'peakgroups', plottype = 'deviation')}
 \CommentTok{# or obiwarp method}
-\NormalTok{xdata<-}\StringTok{ }\KeywordTok{retcor}\NormalTok{(xdata, }\DataTypeTok{method =} \StringTok{'obiwarp'}\NormalTok{, }\DataTypeTok{plottype =} \StringTok{'deviation'}\NormalTok{, }\DataTypeTok{profStep =} \FloatTok{0.6}\NormalTok{)}
+\NormalTok{xdata<-}\StringTok{ }\KeywordTok{retcor}\NormalTok{(xdata, }\DataTypeTok{method =} \StringTok{'obiwarp'}\NormalTok{, }\DataTypeTok{plottype =} \StringTok{'deviation'}\NormalTok{,}
+               \DataTypeTok{profStep =} \FloatTok{0.1}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## center sample:  DDAdata3 
+## Processing: DDAdata1  DDAdata2
+\end{verbatim}
+
+\begin{figure}
+\centering
+\includegraphics{MSAnalisis_files/figure-latex/xcmsOld-1.pdf}
+\caption{\label{fig:xcmsOld}RT correction plot}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{xdata<-}\StringTok{ }\NormalTok{xcms}\OperatorTok{::}\KeywordTok{group}\NormalTok{(xdata, }\DataTypeTok{bw =} \DecValTok{20}\NormalTok{, }\DataTypeTok{minfrac =} \DecValTok{1}\NormalTok{)}
 \CommentTok{# fill gaps}
 \NormalTok{xdata <-}\KeywordTok{fillPeaks}\NormalTok{(xdata)}
+\CommentTok{# saveRDS(xdata, file = "Data/xset.Rda")}
 \end{Highlighting}
 \end{Shaded}
 
@@ -544,10 +615,33 @@ CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注�
 \NormalTok{xa <-}\StringTok{ }\KeywordTok{xsAnnotate}\NormalTok{(xdata)}
 \CommentTok{#Group after RT value of the xcms grouped peak}
 \NormalTok{xag <-}\StringTok{ }\KeywordTok{groupFWHM}\NormalTok{(xa, }\DataTypeTok{perfwhm=}\FloatTok{0.6}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## Start grouping after retention time.
+## Created 107 pseudospectra.
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \CommentTok{#Verify grouping}
 \NormalTok{xac <-}\StringTok{ }\KeywordTok{groupCorr}\NormalTok{(xag)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Start grouping after correlation.
+## Generating EIC's .. 
+## 
+## Calculating peak correlations in 107 Groups... 
+##  % finished: 10  20  30  40  50  60  70  80  90  100  
+## 
+## Calculating graph cross linking in 107 Groups... 
+##  % finished: 10  20  30  40  50  60  70  80  90  100  
+## New number of ps-groups:  166 
+## xsAnnotate has now 166 groups, instead of 107
+\end{verbatim}
 
 \subsubsection{同位素峰注释}
 
@@ -558,6 +652,13 @@ CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注�
 \end{Highlighting}
 \end{Shaded}
 
+\begin{verbatim}
+## Generating peak matrix!
+## Run isotope peak annotation
+##  % finished: 10  20  30  40  50  60  70  80  90  100  
+## Found isotopes: 85
+\end{verbatim}
+
 \subsubsection{加合物峰注释}
 
 在同位素峰注释完成之后，才可以进行加合物峰的注释。
@@ -565,9 +666,16 @@ CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注�
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{#Annotate adducts}
-\NormalTok{xac.addu <-}\StringTok{ }\KeywordTok{findAdducts}\NormalTok{(xac.isotope, }\DataTypeTok{polarity=}\StringTok{"positive"}\NormalTok{)}
+\NormalTok{xac.addu <-}\StringTok{ }\NormalTok{CAMERA}\OperatorTok{::}\KeywordTok{findAdducts}\NormalTok{(xac.isotope, }\DataTypeTok{polarity=}\StringTok{"positive"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Generating peak matrix for peak annotation!
+## 
+## Calculating possible adducts in 166 Groups... 
+##  % finished: 10  20  30  40  50  60  70  80  90  100
+\end{verbatim}
 
 在这里需要注意的是，加合物的注释可以自己给定加合物注释的规则(rules)。事实上，CAMERA本身内置了非常多的加合物形式的规则，但对于不同的LC体系，产生的加合物形式会有所不同，因而，对于特定的实验来说，最好根据大家对实验中采用的LC体系的了解，自己制定针对性的注释规则。对于CAMERA中的加合物注释规则，大家可以使用以下代码提取，在自己制定规则的时候，可以用做参考。
 
@@ -581,11 +689,10 @@ CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注�
 \end{Shaded}
 
 \begin{verbatim}
-##       name nmol charge massdiff oidscore quasi ips
-## 1   [M+H]+    1      1    1.007        1     1   1
-## 2  [M+Na]+    1      1   22.989        8     1   1
-## 3   [M+K]+    1      1   38.963       10     1   1
-## 4 [M+NH4]+    1      1   18.034       16     1   1
+##      name nmol charge massdiff oidscore quasi ips
+## 1  [M+H]+    1      1    1.007        1     1   1
+## 2 [M+Na]+    1      1   22.989        8     1   1
+##  [ reached 'max' / getOption("max.print") -- omitted 2 rows ]
 \end{verbatim}
 
 对于以上每一列表示的具体含义，可以参考使用文档`Create rule table'章节（Bioconductor v3.9 在14页，\href{https://bioconductor.org/packages/release/bioc/vignettes/CAMERA/inst/doc/CAMERA.pdf}{Section 6}）
@@ -595,9 +702,16 @@ CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注�
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{my.rules <-}\StringTok{ }\KeywordTok{read.csv}\NormalTok{(files[}\DecValTok{4}\NormalTok{])}
-\NormalTok{xac.addu <-}\StringTok{ }\KeywordTok{findAdducts}\NormalTok{(xac.isotope, }\DataTypeTok{rules =}\NormalTok{ my.rules, }\DataTypeTok{polarity=}\StringTok{"positive"}\NormalTok{)}
+\NormalTok{xac.addu <-}\StringTok{ }\NormalTok{CAMERA}\OperatorTok{::}\KeywordTok{findAdducts}\NormalTok{(xac.isotope, }\DataTypeTok{rules =}\NormalTok{ my.rules, }\DataTypeTok{polarity=}\StringTok{"positive"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+\begin{verbatim}
+## Generating peak matrix for peak annotation!
+## Found and use user-defined ruleset!
+## Calculating possible adducts in 166 Groups... 
+##  % finished: 10  20  30  40  50  60  70  80  90  100
+\end{verbatim}
 
 注：polarity请根据自己实验采集数据时的离子模式正确设置，在不设置自定义规则的时候，CAMERA会调用内置的与该离子模式相同的规则（包含primary和extended）进行注释。
 
@@ -606,17 +720,19 @@ CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注�
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{#Get final peaktable and store on harddrive}
-\NormalTok{res.anno <-}\StringTok{ }\KeywordTok{getPeaklist}\NormalTok{(xac.addu)}
-\KeywordTok{write.csv}\NormalTok{(res.anno,}\DataTypeTok{file=}\StringTok{"Result.csv"}\NormalTok{)}
-\KeywordTok{head}\NormalTok{(res.anno)}
+\NormalTok{res.anno <-}\StringTok{ }\NormalTok{CAMERA}\OperatorTok{::}\KeywordTok{getPeaklist}\NormalTok{(xac.addu)}
+\KeywordTok{saveRDS}\NormalTok{(res.anno, }\DataTypeTok{file =} \StringTok{"Data/AnnoRes.Rda"}\NormalTok{)}
+\CommentTok{# write.csv(res.anno,file="Result.csv")}
+\NormalTok{knitr}\OperatorTok{::}\KeywordTok{include_graphics}\NormalTok{(}\StringTok{"Figures/Fig_CameraResExample.png"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
-对于adduct列，我们看到的最后部分的数字表示该加合物形式对应的M的质荷比，方括号内显示的是M的加合物形式，方括号后面的`+'号则表示该加合物形式的电荷数量。而同位素注释结果中最前面的方括号表示该同位素所对应的id，id相同的峰为同一个M峰的不同同位素峰，第二个方括号中的M+x表示同位素峰中的同位素情况，方括号外面的内容则表示电荷情况。pcgroup列则是在预处理时CAMERA生成的group信息
+\includegraphics{Figures/Fig_CameraResExample.png}
+Figure \ref{fig:DDAvsDIA}展示了CAMERA注释的结果，对于adduct列，我们看到的最后部分的数字表示该加合物形式对应的M的质荷比，方括号内显示的是M的加合物形式，方括号后面的`+'号则表示该加合物形式的电荷数量。而同位素注释结果中最前面的方括号表示该同位素所对应的id，id相同的峰为同一个M峰的不同同位素峰，第二个方括号中的M+x表示同位素峰中的同位素情况，方括号外面的内容则表示电荷情况。pcgroup列则是在预处理时CAMERA生成的group信息
 
 \subsection{小结}
 
-峰检测是质谱数据处理的基础，利用峰检测可以获取样品中检测到的信号的基本信息，如mz、RT、峰面积等，这些信息是代谢物鉴定和差异分析的基础，利用xcms进行峰检测，并借助于CAMERA进行峰注释，可以有效的检测到样品中含有的代谢物信息，并去除部分冗余。除了xcms，还有很多同样优秀的质谱数据处理分析的软件，如OpenMS，MZ Mine2，MS-DIAL等，在此暂不做详细介绍，如有兴趣请参考相应软件的官方说明。
+峰检测是质谱数据处理的基础，利用峰检测可以获取样品中检测到的信号的基本信息，如mz、RT、峰面积等，这些信息是代谢物鉴定和差异分析的基础，利用xcms进行峰检测，并借助于CAMERA进行峰注释，可以有效的检测到样品中含有的代谢物信息，并去除部分冗余。除了xcms，还有很多同样优秀的质谱数据处理分析的软件，如OpenMS，MZmine 2 ，MS-DIAL等，在此暂不做详细介绍，如有兴趣请参考相应软件的官方说明。
 
 \hypertarget{chapMSMS}{%
 \chapter{二级谱图提取}\label{chapMSMS}}
@@ -624,15 +740,134 @@ CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注�
 \hypertarget{dda}{%
 \section{DDA数据里的二级谱图}\label{dda}}
 
+DDA采集模式在采集二级(MSMS or MS2)谱图时，会按照母离子丰度从高代低依次采集，然后记录采集谱图时目标的母离子的m/z信息和采集时间，但无法记录采集时该MS1离子的强度(intensity)，因而，可以根据记录的母离子m/z和采集时间，与对峰检测中获取的峰进行对应，从而获取代表采集到的代谢物的二级谱图信息，进而通过谱图比对的方式进行代谢物鉴定，同时利用峰检测结果进行定量。甚至可以只用二级谱图的信息，直接通过谱图比对，进行代谢物鉴定。
+
+要获取二级谱图信息，最简单的方法是利用ProteoWizard中的msConvert直接进行数据转换，只提取MS2信息生成MGF格式数据，再读取MGF文本信息，从而在程序里获得MS2数据，进行后续处理；另一种方法是直接在xcms中直接读取转换好的mzXML文件，并从中得到二级谱图信息，或者根据一级峰检测结果，从二级质谱数据中提取与之对应的谱图数据。
+
 \hypertarget{proteowizard}{%
 \section{利用ProteoWizard进行二级谱图提取}\label{proteowizard}}
 
-\subsection{普图提取}
+MSConvert转换数据到MGF时，设置如Figure \ref{fig:ConvertMGF}所示。转换完之后，即可得到对应的MGF文件(Figure \ref{fig:MGFExample})
 
-\subsection{与峰检测结果进行结合}
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{Figures/Fig_CovertMGF} \caption{Converting mzXML to MGF with msConvert}\label{fig:ConvertMGF}
+\end{figure}
+\begin{figure}
+\includegraphics[width=0.4\linewidth]{Figures/Fig_MGFExample} \caption{Example of MGF data record}\label{fig:MGFExample}
+\end{figure}
 
-\hypertarget{xcms}{%
-\section{利用XCMS进行二级谱图提取}\label{xcms}}
+\subsection{谱图提取}
+
+\begin{itemize}
+\tightlist
+\item
+  利用R读取MGF文件，并获取MS2谱图信息。
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\KeywordTok{source}\NormalTok{(}\StringTok{"Code/ReadMGF.R"}\NormalTok{)}
+\NormalTok{files <-}\StringTok{ }\KeywordTok{list.files}\NormalTok{(}\DataTypeTok{path =} \StringTok{"Data"}\NormalTok{, }\DataTypeTok{pattern =} \StringTok{"(?i).MGF$"}\NormalTok{,}
+                    \DataTypeTok{recursive =} \OtherTok{TRUE}\NormalTok{, }\DataTypeTok{full.names =} \OtherTok{TRUE}\NormalTok{)}
+\NormalTok{mgf.data <-}\StringTok{ }\KeywordTok{ReadMGF}\NormalTok{(files[}\DecValTok{1}\NormalTok{])}
+\NormalTok{spec.info <-}\StringTok{ }\NormalTok{plyr}\OperatorTok{::}\KeywordTok{ldply}\NormalTok{(mgf.data, }\StringTok{`}\DataTypeTok{[[}\StringTok{`}\NormalTok{, }\StringTok{"info"}\NormalTok{)}
+\KeywordTok{head}\NormalTok{(spec.info)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##      mz    rt
+## 1 188.2 5.293
+## 2 237.2 5.343
+## 3 247.2 5.393
+## 4 309.0 5.443
+## 5 340.1 5.493
+## 6 367.1 5.543
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{spec.all <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(mgf.data, }\StringTok{`}\DataTypeTok{[[}\StringTok{`}\NormalTok{, }\StringTok{"spec"}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(spec.all[[}\DecValTok{2682}\NormalTok{]], }\DataTypeTok{type =} \StringTok{"h"}\NormalTok{, }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{MSAnalisis_files/figure-latex/readMGF-1.pdf}
+\caption{\label{fig:readMGF}Example of extracted MS2 spectrum}
+\end{figure}
+
+\begin{itemize}
+\tightlist
+\item
+  对谱图信息进行去噪音处理
+  仪器记录的原始MS2谱图信息含有很多噪音(white noise)，不同的仪器有不同的噪音水平，可以根据记录的强度信息大致做出评判，一般在我们使用的这组数据中，采用30作为噪音的基准值(Figure \ref{fig:mgfSpecInt})，对于低于该水平的二级碎片，要清除掉。另外，在记录的MS2谱图里面，也会包含有高于母离子m/z的碎片出现，这些碎片也要清除掉(Figure \ref{fig:mgfNoise})。
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{frag.all <-}\StringTok{ }\KeywordTok{do.call}\NormalTok{(rbind, spec.all)}
+\KeywordTok{plot}\NormalTok{(}\KeywordTok{density}\NormalTok{(frag.all[frag.all[, }\DecValTok{2}\NormalTok{] }\OperatorTok{<=}\StringTok{ }\DecValTok{200}\NormalTok{, }\DecValTok{2}\NormalTok{]),}
+     \DataTypeTok{main =} \StringTok{"Density of intensities (<=200)"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{figure}
+\centering
+\includegraphics{MSAnalisis_files/figure-latex/mgfSpecInt-1.pdf}
+\caption{\label{fig:mgfSpecInt}Density of MS2 spectra intensities}
+\end{figure}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{spec.denoise <-}\StringTok{ }\KeywordTok{lapply}\NormalTok{(}\KeywordTok{seq_along}\NormalTok{(spec.all), }\ControlFlowTok{function}\NormalTok{(idx) \{}
+\NormalTok{  spec <-}\StringTok{ }\NormalTok{spec.all[[idx]]}
+\NormalTok{  spec <-}\StringTok{ }\NormalTok{spec[spec[, }\DecValTok{2}\NormalTok{] }\OperatorTok{>=}\StringTok{ }\DecValTok{30}\NormalTok{, , drop =}\StringTok{ }\OtherTok{FALSE}\NormalTok{]}
+\NormalTok{  mz.precursor <-}\StringTok{ }\NormalTok{spec.info[idx, }\StringTok{"mz"}\NormalTok{]}
+\NormalTok{  spec <-}\StringTok{ }\NormalTok{spec[spec[, }\DecValTok{1}\NormalTok{] }\OperatorTok{<=}\StringTok{ }\NormalTok{mz.precursor, , drop =}\StringTok{ }\OtherTok{FALSE}\NormalTok{]}
+\NormalTok{\})}
+\KeywordTok{plot}\NormalTok{(spec.all[[}\DecValTok{2682}\NormalTok{]], }\DataTypeTok{type =} \StringTok{"h"}\NormalTok{, }\DataTypeTok{col =} \StringTok{"gray50"}\NormalTok{)}
+\KeywordTok{lines}\NormalTok{(spec.denoise[[}\DecValTok{2682}\NormalTok{]], }\DataTypeTok{type =} \StringTok{"h"}\NormalTok{, }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{0}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{30}\NormalTok{, }\DataTypeTok{lty =} \DecValTok{3}\NormalTok{)}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{v=}\NormalTok{spec.info[}\DecValTok{2682}\NormalTok{, }\StringTok{"mz"}\NormalTok{], }\DataTypeTok{lty =} \DecValTok{3}\NormalTok{, }\DataTypeTok{col =} \StringTok{"green4"}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{MSAnalisis_files/figure-latex/mgfNoise-1.pdf}
+\#\#\# 与峰检测结果进行结合
+根据提取出来的MS2谱图的m/z和rt信息，与之前得到的峰检测结果进行匹配，将匹配上的，保留为与检测到的峰对应的MS2谱图。对同一个代谢物，有可能打到多张MS2谱图，此时，要选择其中某一张谱图最为标准或者用合适的方法合并这两张谱图，从而得到在样品中采集到的二级谱图信息
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{pk.info <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"Data/AnnoRes.Rda"}\NormalTok{)}
+\NormalTok{mz.pk <-}\StringTok{ }\NormalTok{pk.info[, }\StringTok{"mz"}\NormalTok{]}
+\NormalTok{mz.spec <-}\StringTok{ }\NormalTok{spec.info[, }\StringTok{"mz"}\NormalTok{]}
+\NormalTok{rt.spec <-}\StringTok{ }\NormalTok{spec.info[, }\StringTok{"rt"}\NormalTok{]}
+\NormalTok{idx.spec <-}\StringTok{ }\KeywordTok{apply}\NormalTok{(pk.info, }\DecValTok{1}\NormalTok{, }\ControlFlowTok{function}\NormalTok{(dr) \{}
+\NormalTok{  mz <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(dr[}\StringTok{"mz"}\NormalTok{])}
+\NormalTok{  rt <-}\StringTok{ }\KeywordTok{as.numeric}\NormalTok{(dr[}\StringTok{"rt"}\NormalTok{])}
+\NormalTok{  idx <-}\StringTok{ }\KeywordTok{which}\NormalTok{(mz.spec }\OperatorTok{>=}\StringTok{ }\NormalTok{mz }\OperatorTok{-}\StringTok{ }\FloatTok{0.01} \OperatorTok{&}\StringTok{ }\NormalTok{mz.spec }\OperatorTok{<=}\StringTok{ }\NormalTok{mz }\OperatorTok{+}\StringTok{ }\FloatTok{0.01} \OperatorTok{&}
+\StringTok{                 }\NormalTok{rt.spec }\OperatorTok{>=}\StringTok{ }\NormalTok{rt }\OperatorTok{-}\StringTok{ }\DecValTok{5} \OperatorTok{&}\StringTok{ }\NormalTok{rt.spec }\OperatorTok{<=}\StringTok{ }\NormalTok{rt }\OperatorTok{+}\StringTok{ }\DecValTok{5}\NormalTok{)}
+\NormalTok{\})}
+
+\KeywordTok{require}\NormalTok{(xcms)}
+\NormalTok{xset <-}\StringTok{ }\KeywordTok{readRDS}\NormalTok{(}\StringTok{"Data/xset.Rda"}\NormalTok{)}
+\NormalTok{eic <-}\StringTok{ }\KeywordTok{getEIC}\NormalTok{(xset, }\DataTypeTok{groupidx =} \DecValTok{7}\NormalTok{, }\DataTypeTok{rtrange =} \DecValTok{50}\NormalTok{,}
+                    \DataTypeTok{sampleidx=}\KeywordTok{sampnames}\NormalTok{(xset)[}\DecValTok{1}\NormalTok{], }\DataTypeTok{rt =} \StringTok{"raw"}\NormalTok{)}
+\KeywordTok{par}\NormalTok{(}\DataTypeTok{mfrow=}\KeywordTok{c}\NormalTok{(}\DecValTok{1}\NormalTok{,}\DecValTok{2}\NormalTok{))}
+\KeywordTok{plot}\NormalTok{(eic}\OperatorTok{@}\NormalTok{eic}\OperatorTok{$}\NormalTok{DDAdata1[[}\DecValTok{1}\NormalTok{]], }\DataTypeTok{type =} \StringTok{"b"}\NormalTok{, }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{)}
+\CommentTok{# points(eic@eic$DDAdata1[[1]], col = "gray")}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{v=}\NormalTok{rt.spec[idx.spec[[}\DecValTok{7}\NormalTok{]]], }\DataTypeTok{col =} \StringTok{"green4"}\NormalTok{, }\DataTypeTok{lty =} \DecValTok{2}\NormalTok{)}
+\KeywordTok{plot}\NormalTok{(spec.denoise[[idx.spec[[}\DecValTok{7}\NormalTok{]][}\DecValTok{2}\NormalTok{]]], }\DataTypeTok{type =} \StringTok{"h"}\NormalTok{, }\DataTypeTok{col =} \StringTok{"red"}\NormalTok{, }\DataTypeTok{ylim =} \KeywordTok{c}\NormalTok{(}\DecValTok{0}\NormalTok{, }\DecValTok{200}\NormalTok{))}
+\KeywordTok{abline}\NormalTok{(}\DataTypeTok{h=}\DecValTok{0}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\includegraphics{MSAnalisis_files/figure-latex/mgfMS2Assign-1.pdf}
+\#\# 利用XCMS进行二级谱图提取
 
 \hypertarget{-1}{%
 \section{小结}\label{-1}}
@@ -640,9 +875,28 @@ CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注�
 \hypertarget{chapID}{%
 \chapter{代谢物鉴定}\label{chapID}}
 
+代谢组学最重要的目标之一，就是获取样品中有哪些代谢物，并知道该代谢物的含量信息。因而代谢物的鉴定，成为在峰检测之后最为重要的工作，只有在获取准确的代谢物鉴定结果的基础上，才可以准确的做接下来的生物信息学的各项分析。
+
 \section{代谢物鉴定方法介绍}
 
+通过与标准谱图库里的MS2谱图进行比对，从而获取采集到的代谢物的信息是最常用且有效的方法，对于少量的数据，可以用在线的代谢物鉴定工具进行处理即可，如METLIN，MassBank，MoNA等。另外也可以通过理论谱图进行鉴定，如CFM-ID，MetFrag等。
+
+对于植物代谢物，\href{https://gnps.ucsd.edu/ProteoSAFe/static/gnps-splash.jsp}{GNPS}谱图库（\href{https://gnps.ucsd.edu/ProteoSAFe/libraries.jsp}{GNPS Public Spectral Libraries}）含有大量的自然产物信息，GNPS网站支持批量通过谱图比对进行代谢物鉴定，也是非常不错的代谢物鉴定工具。除此之外，GNPS包含了很多植物代谢组学和自然产物相关的数据处理分析的工具，如有兴趣，可以自行去官方网站了解学习，在此不多赘述。
+
+特别要注意的是，在代谢物鉴定的时候，一定要选择与自己数据采集时相对应的仪器平台的标准谱图进行比较。这是因为，在LC-MS中采集到的MS2谱图，不同的仪器平台会有很大的差异，Q-TOF和Obitrap的谱图在大多数情况下显著不同，同时，即便同一平台，不同仪器之间的谱图也会略有差异，但仍可用于代谢物鉴定，只是对鉴定的可信度略有影响。而在MassBank/MoNA谱图库中，包含了来自所有仪器平台的谱图信息，因而，在利用该谱图库进行代谢物鉴定时一定要非常注意。另外，METLIN数据库很多时候会屏蔽部分IP地址，因而国内很多地方可能无法使用，对我们会造成不便，目前美国的IP地址基本可以访问。
+
 \section{常用鉴定工具}
+
+\hypertarget{ms-dialdda}{%
+\subsection{利用MS-DIAL进行DDA数据处理并进行代谢物鉴定}\label{ms-dialdda}}
+
+MS-DIAL软件的\href{https://mtbinfo-team.github.io/mtbinfo.github.io/MS-DIAL/tutorial}{官方文档}有较详细的说明，
+
+\section{自行进行代谢物鉴定}
+
+由于很多代谢物谱图库包含了大量冗余信息，包含很多与自己数据采集时仪器平台不一致的代谢物谱图，同时对鉴定结果不易批量处理，因而，自行进行代谢物鉴定也是非常不错的途径，且可以自行定制代谢物鉴定的比对方法，考虑更多的因素到代谢物鉴定当中来，通过脚本进行自动化代谢物鉴定也是非常常见的方式。
+
+对于利用谱图比对的方式进行代谢物鉴定，首先需要有谱图相似度的比对方法，并对相似度作出正确评判，目前最常用的相似度判断方法为点积(Dot Product)，可以根据不同的目的和谱图库特性选择是正向(Forward)还是反向(Reverse)匹配进行计算。一般对于利用标准品采集获取标准谱图库，我们认为标准谱图库是精准的，可以严格作为判定标准，因而将标准谱图库做正向匹配，获得Forward Dot Product，从而进行代谢物鉴定。
 
 \hypertarget{chapSTAT}{%
 \chapter{基本差异分析}\label{chapSTAT}}

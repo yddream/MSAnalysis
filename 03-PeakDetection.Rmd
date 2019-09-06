@@ -39,18 +39,24 @@ xcms峰检测有两种方法，一种是在xcms3中新近出现的findChromPeaks
 方法目前使用仍较为广泛。以下分别介绍xcms中峰检测的findChromPeaks和xcmsSet方法
 
 ### xcms3中峰检测的新方法
+xcms3的官方文档中有非常详细的数据处理方法的介绍，其中[*LCMS data preprocessing and analysis with xcms*](https://bioconductor.org/packages/release/bioc/vignettes/xcms/inst/doc/xcms.html#6_correspondence)中介绍了如何利用xcms3的新方法进行一级质谱数据处理。
+
 #### 数据导入
 ```{r load_new, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE, cache=TRUE}
 require(xcms)
+require(RColorBrewer)
 ## Get the full path to the data files(mzxml)
-files <- list.files('Data', pattern = '(?i)mzxml$',full.names = TRUE,
-        recursive = TRUE)
+files <- list.files('Data', pattern = '(?i)mzxml$',
+                    full.names = TRUE, recursive = TRUE)
 ## Create a phenodata data.frame
-pd <- data.frame(sample_name = sub(basename(files), pattern = ".mzXML",
-                   replacement = "", fixed = TRUE),
+pd <- data.frame(sample_name = sub(basename(files),
+                                   pattern = ".mzXML", 
+                                   replacement = "",
+                                   fixed = TRUE),
          sample_group = c(rep("grp1", 2), rep("grp2", 1)),
          stringsAsFactors = FALSE) 
-rawData <- readMSData(files = files, pdata = new("NAnnotatedDataFrame", pd),
+rawData <- readMSData(files = files, 
+                      pdata = new("NAnnotatedDataFrame", pd),
                mode = "onDisk") 
 pd
 ```
@@ -60,10 +66,33 @@ pd
 #### 利用centWave算法进行峰检测
 ```{r pd_new, eval=TRUE, message=FALSE, warning=FALSE, dependson=c('load_new'), include=TRUE, cache=TRUE}
 # xcms 3 new methods
-cwp <- CentWaveParam(peakwidth = c(5, 50), noise = 1000, snthresh = 10)
+cwp <- CentWaveParam(peakwidth = c(5, 50),
+                     noise = 1000, snthresh = 10)
 xdata <- findChromPeaks(rawData, param = cwp) 
 head(xdata@msFeatureData$chromPeaks)
 ```
+下图展示检测到的一个峰的示例（Figure \@ref(fig:pd_showPeaks)）和在样品中的EIC信息（Figure \@ref(fig:pd_showEIC)）
+
+```{r pdshowPeaks, eval=TRUE, message=FALSE, warning=FALSE, dependson=c('pd_new'), include=TRUE, cache=TRUE, fig.cap = 'Extracted ion chromatogram for one peak'}
+## Define the rt and m/z range of the peak area
+rtr <- c(375, 400)
+mzr <- c(132.07604, 132.07639)
+## extract the chromatogram
+chrRaw <- chromatogram(xdata, mz = mzr, rt = rtr)
+cls <- paste0(brewer.pal(3, "Set1")[1:2], "60")
+names(cls) <- c("grp1", "grp2")
+plot(chrRaw, col = cls[chrRaw$sample_group], peakBg = cls[chrRaw$sample_group])
+```
+
+```{r pdshowEIC, eval=TRUE, message=FALSE, warning=FALSE, dependson=c('pdshowPeaks'), include=TRUE, cache=TRUE, fig.cap='Visualization of the raw MS data for one peak'}
+library(magrittr)
+# plot EIC/XIC
+xdata %>%
+    filterRt(rt = rtr) %>%
+    filterMz(mz = mzr) %>%
+    plot(type = "XIC")
+```
+
 #### 峰对齐及分组(peak alignment & grouping)
 
 同一代谢物在不同样品的流出时间会略有差异，因而对于峰检测的结果需要进行对齐(alignment)并将不同样品中的统一代谢物分到各自可以表征该代谢物的峰组(peak group)中(代谢组学中一般成为feature)，从而进一步比较不同样品间统一代谢物的含量。通常我们可以使用'obiwarp'算法进行peak alignment，然后利用'density'算法进行peak grouping.
@@ -78,7 +107,7 @@ pgp <- PeakGroupsParam(minFraction = 1)
 # (grouping with 'peakgroup' method)
 xdata <- adjustRtime(xdata, param = pgp)
 # otherwise, one can also use 'Obi-warp' method for alignment
-xdata <- adjustRtime(xdata, param = ObiwarpParam(binSize = 0.6))
+xdata <- adjustRtime(xdata, param = ObiwarpParam(binSize = 0.1))
 ## Grouping with RT corrected peaks 
 pdp <- PeakDensityParam(sampleGroups = xdata$sample_group,
                         minFraction = 0.4, bw = 20)
@@ -92,21 +121,24 @@ xdata <- fillChromPeaks(xdata)
 ```
 
 ### xcms中传统的峰检测方法
-```{r xcms_old, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE, cache=TRUE}
+```{r xcmsOld, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE, cache=TRUE, fig.cap = 'RT correction plot'}
 require(xcms)
 ## Get the full path to the data files(mzxml)
-files <- list.files('Data', pattern = '(?i)mzxml$',full.names = TRUE,
-        recursive = TRUE)
-xdata <- xcmsSet(files, method = 'centWave', peakwidth = c(5, 50), noise= 1000, snthr = 10)
+files <- list.files('Data', pattern = '(?i)mzxml$',
+                    full.names = TRUE, recursive = TRUE)
+xdata <- xcmsSet(files, method = 'centWave',
+                 peakwidth = c(5, 50), noise= 1000, snthr = 10)
 # peak alignment & groups
 # peakgroups method
-xdata <- xcms::group(xdata, minfrac = 1)
-xdata<- retcor(xdata, method = 'peakgroups', plottype = 'deviation')
+# xdata <- xcms::group(xdata, minfrac = 1)
+# xdata<- retcor(xdata, method = 'peakgroups', plottype = 'deviation')
 # or obiwarp method
-xdata<- retcor(xdata, method = 'obiwarp', plottype = 'deviation', profStep = 0.6)
+xdata<- retcor(xdata, method = 'obiwarp', plottype = 'deviation',
+               profStep = 0.1)
 xdata<- xcms::group(xdata, bw = 20, minfrac = 1)
 # fill gaps
 xdata <-fillPeaks(xdata)
+# saveRDS(xdata, file = "Data/xset.Rda")
 ```
 
 ###补充说明
@@ -133,7 +165,7 @@ CAMERA是一个Bioconductor R包，主要用于LC-MS数据中代谢物峰的注�
 
 峰检测完成后则可以开始CAMERA注释的操作了。在正式注释同位素和加合物峰之前，需要对峰检测数据进行进一步的处理，创建CAMERA注释对象，并进行分组并检验分组结果
 
-```{r prepare, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE}
+```{r prepareCMR, eval=TRUE, message=FALSE, warning=FALSE, dependson=c('pkgrp_new'), include=TRUE, cache=TRUE}
 require(CAMERA)
 #Create an xsAnnotate object
 xa <- xsAnnotate(xdata)
@@ -145,7 +177,7 @@ xac <- groupCorr(xag)
 
 #### 同位素峰注释
 
-```{r isotope, eval=FALSE, message=FALSE, warning=FALSE, dependson=c('prepare'), include=TRUE}
+```{r isotopeCMR, eval=TRUE, message=FALSE, warning=FALSE, dependson=c('prepareCMR'), include=TRUE, cache=TRUE}
 #Annotate isotopes, could be done before groupCorr
 xac.isotope <- findIsotopes(xac)
 ```
@@ -154,14 +186,14 @@ xac.isotope <- findIsotopes(xac)
 
 在同位素峰注释完成之后，才可以进行加合物峰的注释。
 
-```{r addu, eval=FALSE, message=FALSE, warning=FALSE, dependson=c('isotope'), include=TRUE}
+```{r addu, eval=TRUE, message=FALSE, warning=FALSE, dependson=c('prepareCMR', 'isotopeCMR'), include=TRUE, catch = TRUE}
 #Annotate adducts
-xac.addu <- findAdducts(xac.isotope, polarity="positive")
+xac.addu <- CAMERA::findAdducts(xac.isotope, polarity="positive")
 ```
 
 在这里需要注意的是，加合物的注释可以自己给定加合物注释的规则(rules)。事实上，CAMERA本身内置了非常多的加合物形式的规则，但对于不同的LC体系，产生的加合物形式会有所不同，因而，对于特定的实验来说，最好根据大家对实验中采用的LC体系的了解，自己制定针对性的注释规则。对于CAMERA中的加合物注释规则，大家可以使用以下代码提取，在自己制定规则的时候，可以用做参考。
 
-```{r rules, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE}
+```{r rules, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE, catch = TRUE}
 # list all rule files (for positive/negative modes, primary/extende rules)
 files <- list.files(system.file('rules', package = "CAMERA"), full.names = TRUE)
 # show head lines of sample rule
@@ -171,23 +203,23 @@ head(read.csv(files[4]))
 
 如果需要使用自定义的规则，请参考以下代码：
 
-```{r rules_mod, eval=FALSE, message=FALSE, warning=FALSE, dependson=c('prepare'), include=TRUE}
+```{r rules_mod, eval=TRUE, message=FALSE, warning=FALSE, dependson=c('rules', 'isotopeCMR'), include=TRUE, catch = TRUE}
 my.rules <- read.csv(files[4])
-xac.addu <- findAdducts(xac.isotope, rules = my.rules, polarity="positive")
+xac.addu <- CAMERA::findAdducts(xac.isotope, rules = my.rules, polarity="positive")
 ```
 
 注：polarity请根据自己实验采集数据时的离子模式正确设置，在不设置自定义规则的时候，CAMERA会调用内置的与该离子模式相同的规则（包含primary和extended）进行注释。
 
-
 #### 注释结果表格输出
 
-```{r output, eval=FALSE, message=FALSE, warning=FALSE, dependson=c('prepare'), include=TRUE}
+```{r output, eval=TRUE, message=FALSE, warning=FALSE, dependson=c('addu'), include=TRUE, catch = FALSE, fig.cap="Example of CAMERA annotation results"}
 #Get final peaktable and store on harddrive
-res.anno <- getPeaklist(xac.addu)
-write.csv(res.anno,file="Result.csv")
-head(res.anno)
+res.anno <- CAMERA::getPeaklist(xac.addu)
+saveRDS(res.anno, file = "Data/AnnoRes.Rda")
+# write.csv(res.anno,file="Result.csv")
+knitr::include_graphics("Figures/Fig_CameraResExample.png")
 ```
-对于adduct列，我们看到的最后部分的数字表示该加合物形式对应的M的质荷比，方括号内显示的是M的加合物形式，方括号后面的‘+’号则表示该加合物形式的电荷数量。而同位素注释结果中最前面的方括号表示该同位素所对应的id，id相同的峰为同一个M峰的不同同位素峰，第二个方括号中的M+x表示同位素峰中的同位素情况，方括号外面的内容则表示电荷情况。pcgroup列则是在预处理时CAMERA生成的group信息
+Figure \@ref(fig:DDAvsDIA)展示了CAMERA注释的结果，对于adduct列，我们看到的最后部分的数字表示该加合物形式对应的M的质荷比，方括号内显示的是M的加合物形式，方括号后面的‘+’号则表示该加合物形式的电荷数量。而同位素注释结果中最前面的方括号表示该同位素所对应的id，id相同的峰为同一个M峰的不同同位素峰，第二个方括号中的M+x表示同位素峰中的同位素情况，方括号外面的内容则表示电荷情况。pcgroup列则是在预处理时CAMERA生成的group信息
 
 ### 小结
-峰检测是质谱数据处理的基础，利用峰检测可以获取样品中检测到的信号的基本信息，如mz、RT、峰面积等，这些信息是代谢物鉴定和差异分析的基础，利用xcms进行峰检测，并借助于CAMERA进行峰注释，可以有效的检测到样品中含有的代谢物信息，并去除部分冗余。除了xcms，还有很多同样优秀的质谱数据处理分析的软件，如OpenMS，MZ Mine2，MS-DIAL等，在此暂不做详细介绍，如有兴趣请参考相应软件的官方说明。
+峰检测是质谱数据处理的基础，利用峰检测可以获取样品中检测到的信号的基本信息，如mz、RT、峰面积等，这些信息是代谢物鉴定和差异分析的基础，利用xcms进行峰检测，并借助于CAMERA进行峰注释，可以有效的检测到样品中含有的代谢物信息，并去除部分冗余。除了xcms，还有很多同样优秀的质谱数据处理分析的软件，如OpenMS，MZmine 2 ，MS-DIAL等，在此暂不做详细介绍，如有兴趣请参考相应软件的官方说明。
